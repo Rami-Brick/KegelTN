@@ -4,5 +4,85 @@
     "placeholder": "Enter your access key",
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
+  },
+  "quiz": {
+    "progress": "{{current}} of {{total}}",
+    "next": "Continue",
+    "back": "Back",
+    "q1": {
+      "title": "How old are you?",
+      "subtitle": "This helps us personalize your program",
+      "o1": "18 – 25",
+      "o2": "26 – 35",
+      "o3": "36 – 45",
+      "o4": "46+"
+    },
+    "q2": {
+      "title": "What's your main goal?",
+      "subtitle": "We'll focus your training on this",
+      "o1": "Stronger erections",
+      "o2": "Last longer in bed",
+      "o3": "Both"
+    },
+    "q3": {
+      "title": "What would you most like to improve?",
+      "subtitle": "Be specific — this shapes your plan",
+      "o1": "Get harder erections",
+      "o2": "Maintain hardness longer",
+      "o3": "Control when I finish",
+      "o4": "Overall sexual confidence"
+    },
+    "q4": {
+      "title": "How would you rate your erection quality?",
+      "subtitle": "Be honest — no judgment here",
+      "o1": "Weak – I struggle to get fully hard",
+      "o2": "Average – works but could be better",
+      "o3": "Good – just want to improve more",
+      "o4": "Strong – looking for an extra edge"
+    },
+    "q5": {
+      "title": "Can you maintain your erection during sex?",
+      "subtitle": "This helps us gauge your baseline",
+      "o1": "I often lose it during sex",
+      "o2": "Sometimes it fades",
+      "o3": "Usually fine, occasional issues",
+      "o4": "No problems at all"
+    },
+    "q6": {
+      "title": "How's your control over finishing?",
+      "subtitle": "This determines your endurance focus",
+      "o1": "Very little control",
+      "o2": "Some control, but not enough",
+      "o3": "Decent control most of the time",
+      "o4": "Full control"
+    },
+    "q7": {
+      "title": "How would you describe your sex drive?",
+      "subtitle": "Libido affects training approach",
+      "o1": "Low – rarely in the mood",
+      "o2": "Moderate – comes and goes",
+      "o3": "High – often in the mood",
+      "o4": "Very high"
+    },
+    "q8": {
+      "title": "How often can you commit to training?",
+      "subtitle": "Consistency matters more than intensity",
+      "o1": "Every day",
+      "o2": "4–5 times a week",
+      "o3": "2–3 times a week",
+      "o4": "When I remember"
+    },
+    "results": {
+      "title": "Your personalized plan is ready",
+      "subtitle": "Based on your answers, we recommend:",
+      "program": "{{program}} Program",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "insight1": "Targets your specific goals",
+      "insight2": "Matches your current level",
+      "insight3": "Fits your schedule",
+      "start": "Start My Program"
+    }
   }
 }

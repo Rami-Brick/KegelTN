@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
+import { loginWithKey } from '../services/auth';
 import logo from '../assets/logo.png';
 
 export default function LoginScreen() {
@@ -21,10 +22,8 @@ export default function LoginScreen() {
     setLoading(true);
 
     try {
-      // TODO: Supabase auth logic (Step 5)
-      console.log('Login with key:', accessKey);
-      await new Promise((r) => setTimeout(r, 1000)); // Simulate delay
-      setError(t('login.error')); // Simulate error for now
+      await loginWithKey(accessKey);
+      // Auth state change will be handled by App.tsx
     } catch {
       setError(t('login.error'));
     } finally {
