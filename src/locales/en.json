@@ -5,6 +5,23 @@
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
   },
+  "workout": {
+    "title": "Choose Your Workout",
+    "recommended": "Recommended for you",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "beginner_desc": "Perfect for getting started. Build your foundation.",
+    "intermediate_desc": "Step it up. Increase hold times and reps.",
+    "advanced_desc": "Maximum intensity. For experienced trainers.",
+    "contract": "{{sec}}s contract",
+    "relax": "{{sec}}s relax",
+    "reps": "{{count}} reps",
+    "duration": "~{{min}} min",
+    "start": "Start Workout",
+    "locked": "Complete {{prev}} first",
+    "back": "Back"
+  },
   "home": {
     "greeting_morning": "Good morning",
     "greeting_afternoon": "Good afternoon",

@@ -5,6 +5,23 @@
     "button": "ابدأ التمرين",
     "error": "مفتاح الوصول غير صالح. حاول مرة أخرى."
   },
+  "workout": {
+    "title": "اختر تمرينك",
+    "recommended": "موصى به لك",
+    "beginner": "مبتدئ",
+    "intermediate": "متوسط",
+    "advanced": "متقدم",
+    "beginner_desc": "مثالي للبداية. ابنِ أساسك.",
+    "intermediate_desc": "ارفع المستوى. زد أوقات الشد والتكرارات.",
+    "advanced_desc": "أقصى شدة. للمتدربين ذوي الخبرة.",
+    "contract": "{{sec}} ثانية شد",
+    "relax": "{{sec}} ثانية استرخاء",
+    "reps": "{{count}} تكرار",
+    "duration": "~{{min}} دقيقة",
+    "start": "ابدأ التمرين",
+    "locked": "أكمل {{prev}} أولاً",
+    "back": "رجوع"
+  },
   "home": {
     "greeting_morning": "صباح الخير",
     "greeting_afternoon": "مساء الخير",

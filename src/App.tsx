@@ -4,12 +4,14 @@ import { supabase } from './lib/supabase';
 import LoginScreen from './screens/LoginScreen';
 import QuizScreen from './screens/QuizScreen';
 import HomeScreen from './screens/HomeScreen';
+import WorkoutScreen from './screens/WorkoutScreen';
 
-type AppState = 'loading' | 'login' | 'quiz' | 'home';
+type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'workout';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [session, setSession] = useState<any>(null);
+  const [recommendedProgram, setRecommendedProgram] = useState('beginner');
 
   useEffect(() => {
     getSession().then(async (s) => {
@@ -21,11 +23,16 @@ function App() {
 
       const { data } = await supabase
         .from('quiz_results')
-        .select('id')
+        .select('id, recommended_program')
         .eq('user_id', s.user.id)
         .maybeSingle();
 
-      setAppState(data ? 'home' : 'quiz');
+      if (data) {
+        setRecommendedProgram(data.recommended_program);
+        setAppState('home');
+      } else {
+        setAppState('quiz');
+      }
     });
 
     const { data: listener } = onAuthStateChange(async (s) => {
@@ -38,11 +45,16 @@ function App() {
 
       const { data } = await supabase
         .from('quiz_results')
-        .select('id')
+        .select('id, recommended_program')
         .eq('user_id', s.user.id)
         .maybeSingle();
 
-      setAppState(data ? 'home' : 'quiz');
+      if (data) {
+        setRecommendedProgram(data.recommended_program);
+        setAppState('home');
+      } else {
+        setAppState('quiz');
+      }
     });
 
     return () => {
@@ -59,12 +71,13 @@ function App() {
       recommended_program: program,
     });
 
+    setRecommendedProgram(program);
     setAppState('home');
   };
 
-  const handleStartWorkout = () => {
-    // TODO: Navigate to workout/exercises screen (next step)
-    console.log('Start workout');
+  const handleStartProgram = (programId: string) => {
+    // TODO: Navigate to timer screen (next step)
+    console.log('Start program:', programId);
   };
 
   if (appState === 'loading') {
@@ -77,10 +90,19 @@ function App() {
 
   if (appState === 'login') return <LoginScreen />;
   if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} />;
+  if (appState === 'workout')
+    return (
+      <WorkoutScreen
+        recommendedProgram={recommendedProgram}
+        onBack={() => setAppState('home')}
+        onStartProgram={handleStartProgram}
+      />
+    );
+
   return (
     <HomeScreen
       userId={session.user.id}
-      onStartWorkout={handleStartWorkout}
+      onStartWorkout={() => setAppState('workout')}
     />
   );
 }
