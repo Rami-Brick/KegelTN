@@ -1,0 +1,8 @@
+{
+  "login": {
+    "tagline": "Train smarter. Perform better.",
+    "placeholder": "Enter your access key",
+    "button": "Start Training",
+    "error": "Invalid access key. Please try again."
+  }
+}
