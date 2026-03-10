@@ -3,14 +3,7 @@ import { getSession, onAuthStateChange } from './services/auth';
 import { supabase } from './lib/supabase';
 import LoginScreen from './screens/LoginScreen';
 import QuizScreen from './screens/QuizScreen';
-
-function HomeScreen() {
-  return (
-    <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
-      <h1 className="text-white text-2xl">Welcome! You're logged in.</h1>
-    </div>
-  );
-}
+import HomeScreen from './screens/HomeScreen';
 
 type AppState = 'loading' | 'login' | 'quiz' | 'home';
 
@@ -26,7 +19,6 @@ function App() {
       }
       setSession(s);
 
-      // Check if quiz is completed
       const { data } = await supabase
         .from('quiz_results')
         .select('id')
@@ -70,6 +62,11 @@ function App() {
     setAppState('home');
   };
 
+  const handleStartWorkout = () => {
+    // TODO: Navigate to workout/exercises screen (next step)
+    console.log('Start workout');
+  };
+
   if (appState === 'loading') {
     return (
       <div className="min-h-screen bg-[#0A0F1E] flex items-center justify-center">
@@ -80,7 +77,12 @@ function App() {
 
   if (appState === 'login') return <LoginScreen />;
   if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} />;
-  return <HomeScreen />;
+  return (
+    <HomeScreen
+      userId={session.user.id}
+      onStartWorkout={handleStartWorkout}
+    />
+  );
 }
 
 export default App;

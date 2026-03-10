@@ -5,6 +5,17 @@
     "button": "ابدأ التمرين",
     "error": "مفتاح الوصول غير صالح. حاول مرة أخرى."
   },
+  "home": {
+    "greeting_morning": "صباح الخير",
+    "greeting_afternoon": "مساء الخير",
+    "greeting_evening": "مساء الخير",
+    "streak": "سلسلة {{count}} يوم",
+    "streak_zero": "!ابدأ سلسلتك",
+    "today_done": "تمرين اليوم مكتمل",
+    "today_pending": "تمرين اليوم ينتظرك",
+    "start": "هيا بنا",
+    "howto": "كيف تؤدي تمارين كيغل"
+  },
   "quiz": {
     "progress": "{{current}} من {{total}}",
     "next": "متابعة",

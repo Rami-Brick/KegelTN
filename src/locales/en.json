@@ -5,6 +5,17 @@
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
   },
+  "home": {
+    "greeting_morning": "Good morning",
+    "greeting_afternoon": "Good afternoon",
+    "greeting_evening": "Good evening",
+    "streak": "{{count}} day streak",
+    "streak_zero": "Start your streak!",
+    "today_done": "Today's session complete",
+    "today_pending": "Today's session awaits",
+    "start": "Let's Go",
+    "howto": "How to do Kegel exercises"
+  },
   "quiz": {
     "progress": "{{current}} of {{total}}",
     "next": "Continue",

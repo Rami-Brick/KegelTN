@@ -119,9 +119,6 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
             transition={{ delay: 0.4 }}
             className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6 mb-6"
           >
-            <p className="text-center text-[#4F8EF7] text-sm font-medium mb-1">
-              {t('quiz.results.subtitle')}
-            </p>
             <p className="text-center text-white text-2xl font-bold">
               {t('quiz.results.program', {
                 program: t(`quiz.results.${program}`),
