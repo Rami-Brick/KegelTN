@@ -5,13 +5,16 @@ import LoginScreen from './screens/LoginScreen';
 import QuizScreen from './screens/QuizScreen';
 import HomeScreen from './screens/HomeScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
+import ExerciseIntroScreen from './screens/ExerciseIntroScreen';
+import TimerScreen, { PROGRAMS } from './screens/TimerScreen';
 
-type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'workout';
+type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'workout' | 'exercise-intro' | 'timer';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [session, setSession] = useState<any>(null);
   const [recommendedProgram, setRecommendedProgram] = useState('beginner');
+  const [selectedProgram, setSelectedProgram] = useState('beginner');
 
   useEffect(() => {
     getSession().then(async (s) => {
@@ -76,8 +79,18 @@ function App() {
   };
 
   const handleStartProgram = (programId: string) => {
-    // TODO: Navigate to timer screen (next step)
-    console.log('Start program:', programId);
+    setSelectedProgram(programId);
+    setAppState('exercise-intro');
+  };
+
+  const handleWorkoutComplete = async (durationSec: number, reps: number) => {
+    if (!session) return;
+
+    await supabase.from('workouts').insert({
+      user_id: session.user.id,
+      program: selectedProgram,
+      duration_seconds: durationSec,
+    });
   };
 
   if (appState === 'loading') {
@@ -90,12 +103,32 @@ function App() {
 
   if (appState === 'login') return <LoginScreen />;
   if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} />;
+
   if (appState === 'workout')
     return (
       <WorkoutScreen
         recommendedProgram={recommendedProgram}
         onBack={() => setAppState('home')}
         onStartProgram={handleStartProgram}
+      />
+    );
+
+  if (appState === 'exercise-intro')
+    return (
+      <ExerciseIntroScreen
+        programName={selectedProgram.charAt(0).toUpperCase() + selectedProgram.slice(1)}
+        onStart={() => setAppState('timer')}
+        onSkip={() => setAppState('timer')}
+      />
+    );
+
+  if (appState === 'timer')
+    return (
+      <TimerScreen
+        program={PROGRAMS[selectedProgram]}
+        onQuit={() => setAppState('home')}
+        onComplete={handleWorkoutComplete}
+        onShowTutorial={() => setAppState('exercise-intro')}
       />
     );
 
