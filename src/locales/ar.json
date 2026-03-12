@@ -5,6 +5,32 @@
     "button": "ابدأ التمرين",
     "error": "مفتاح الوصول غير صالح. حاول مرة أخرى."
   },
+  "journey": {
+    "title": "رحلتي",
+    "profile": "الملف الشخصي",
+    "name": "الاسم",
+    "age": "العمر",
+    "weight": "الوزن",
+    "not_set": "لم يُحدد بعد",
+    "focus_title": "تركيزك",
+    "focus_rigidity": "بناء انتصاب أقوى وأصلب",
+    "focus_stamina": "اكتساب التحكم للاستمرار أطول",
+    "focus_endurance": "بناء تحمّل يدوم",
+    "focus_all": "تحسين الأداء الجنسي الشامل",
+    "level": "مستواك",
+    "motivation_beginner": "أنت تبني أساسًا قويًا — كل جلسة مهمة.",
+    "motivation_intermediate": "أنت تحقق تقدمًا حقيقيًا — واصل الدفع للأمام.",
+    "motivation_advanced": "أنت في مستوى متقدم — الاستمرارية هي قوتك الخارقة.",
+    "stats_title": "الإحصائيات",
+    "total_workouts": "إجمالي التمارين",
+    "current_streak": "سلسلة الأيام",
+    "total_time": "إجمالي الدقائق",
+    "activity_title": "النشاط",
+    "progression_title": "التقدم",
+    "progression_completed": "{{count}} من 3 مكتمل",
+    "home_card": "رحلتي",
+    "home_card_sub": "عرض تقدمك وإحصائياتك"
+  },
   "exercises": {
     "pelvic_tilt": {
       "name": "إمالة الحوض",

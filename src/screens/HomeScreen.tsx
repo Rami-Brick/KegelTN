@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Flame, CheckCircle2, Circle, HelpCircle, LogOut } from 'lucide-react';
+import { Flame, CheckCircle2, Circle, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { logout } from '../services/auth';
 
 interface HomeScreenProps {
   userId: string;
   onStartWorkout: () => void;
+  onOpenJourney: () => void;
 }
 
 function getGreetingKey(): string {
@@ -54,7 +55,7 @@ function calculateStreak(dates: string[]): number {
   return streak;
 }
 
-export default function HomeScreen({ userId, onStartWorkout }: HomeScreenProps) {
+export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: HomeScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
@@ -184,6 +185,25 @@ export default function HomeScreen({ userId, onStartWorkout }: HomeScreenProps) 
             </>
           )}
         </motion.div>
+
+        {/* My Journey card */}
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onOpenJourney}
+          className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3.5 flex items-center gap-3 mb-8"
+        >
+          <div className="w-9 h-9 rounded-full bg-[#4F8EF7]/10 flex items-center justify-center shrink-0">
+            <Flame className="w-4 h-4 text-[#4F8EF7]" />
+          </div>
+          <div className="flex-1 text-start">
+            <p className="text-white text-sm font-medium">{t('journey.home_card')}</p>
+            <p className="text-slate-500 text-xs">{t('journey.home_card_sub')}</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-slate-600" />
+        </motion.button>
 
         {/* How-to link */}
         <motion.button

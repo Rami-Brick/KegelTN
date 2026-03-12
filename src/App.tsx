@@ -8,9 +8,10 @@ import QuizScreen from './screens/QuizScreen';
 import HomeScreen from './screens/HomeScreen';
 import ExerciseLibraryScreen from './screens/ExerciseLibraryScreen';
 import ExerciseIntroScreen from './screens/ExerciseIntroScreen';
+import JourneyScreen from './screens/JourneyScreen';
 import TimerScreen from './screens/TimerScreen';
 
-type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'library' | 'exercise-intro' | 'timer';
+type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'library' | 'exercise-intro' | 'timer' | 'journey';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
@@ -144,10 +145,20 @@ function App() {
       />
     );
 
+  if (appState === 'journey')
+    return (
+      <JourneyScreen
+        userId={session.user.id}
+        userProfile={userProfile}
+        onBack={() => setAppState('home')}
+      />
+    );
+
   return (
     <HomeScreen
       userId={session.user.id}
       onStartWorkout={() => setAppState('library')}
+      onOpenJourney={() => setAppState('journey')}
     />
   );
 }

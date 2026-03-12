@@ -5,6 +5,32 @@
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
   },
+  "journey": {
+    "title": "My Journey",
+    "profile": "Profile",
+    "name": "Name",
+    "age": "Age",
+    "weight": "Weight",
+    "not_set": "Not set yet",
+    "focus_title": "Your Focus",
+    "focus_rigidity": "Building stronger, harder erections",
+    "focus_stamina": "Gaining control to last longer",
+    "focus_endurance": "Building lasting endurance",
+    "focus_all": "Complete sexual performance improvement",
+    "level": "Your Level",
+    "motivation_beginner": "You're building a strong foundation — every session counts.",
+    "motivation_intermediate": "You're making real progress — keep pushing forward.",
+    "motivation_advanced": "You're at an elite level — consistency is your superpower.",
+    "stats_title": "Stats",
+    "total_workouts": "Total Workouts",
+    "current_streak": "Day Streak",
+    "total_time": "Total Minutes",
+    "activity_title": "Activity",
+    "progression_title": "Progression",
+    "progression_completed": "{{count}} of 3 completed",
+    "home_card": "My Journey",
+    "home_card_sub": "View your progress & stats"
+  },
   "exercises": {
     "pelvic_tilt": {
       "name": "Pelvic Tilt",
