@@ -139,6 +139,18 @@ export function computeExerciseStatuses(
 }
 
 /**
+ * Convert exercise name to translation key
+ * e.g., "Pelvic Tilt" → "pelvic_tilt"
+ * e.g., "90 to 90 Advanced" → "90_to_90_advanced"
+ */
+export function exerciseToKey(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '');
+}
+
+/**
  * Category display info
  */
 export const CATEGORIES: Record<string, { color: string; colorBg: string; colorBorder: string }> = {

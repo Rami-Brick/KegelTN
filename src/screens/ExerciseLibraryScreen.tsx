@@ -7,6 +7,7 @@ import {
   fetchActiveExercises,
   fetchCompletions,
   computeExerciseStatuses,
+  exerciseToKey,
   CATEGORIES,
 } from '../services/exercises';
 
@@ -191,13 +192,13 @@ function ExerciseCard({
   onSelect: () => void;
 }) {
   const { t } = useTranslation();
+  const key = exerciseToKey(exercise.name);
 
-  const difficultyLabel =
-    exercise.difficulty === 'beginner'
-      ? t('library.difficulty_beginner')
-      : exercise.difficulty === 'intermediate'
-        ? t('library.difficulty_intermediate')
-        : t('library.difficulty_advanced');
+  const exerciseName = t(`exercises.${key}.name`, { defaultValue: exercise.name });
+  const exerciseDesc = t(`exercises.${key}.description`, { defaultValue: exercise.description });
+  const phase1 = t(`exercises.${key}.phase1`, { defaultValue: exercise.phase1_label });
+  const phase2 = t(`exercises.${key}.phase2`, { defaultValue: exercise.phase2_label });
+  const difficultyLabel = t(`difficulty.${exercise.difficulty}`);
 
   return (
     <motion.button
@@ -256,12 +257,12 @@ function ExerciseCard({
           exercise.isCompleted ? 'text-slate-500' : 'text-white'
         }`}
       >
-        {exercise.name}
+        {exerciseName}
       </h3>
 
       {/* Description */}
       <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed mb-3">
-        {exercise.description}
+        {exerciseDesc}
       </p>
 
       {/* Sets/reps info */}
@@ -274,7 +275,7 @@ function ExerciseCard({
             className="text-[11px] font-medium"
             style={{ color: categoryColor }}
           >
-            {exercise.phase1_label} / {exercise.phase2_label}
+            {phase1} / {phase2}
           </span>
         )}
       </div>

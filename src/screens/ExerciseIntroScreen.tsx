@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Dumbbell, Play, ChevronLeft } from 'lucide-react';
 import { getExerciseMedia } from '../config/media';
+import { exerciseToKey } from '../services/exercises';
 import type { Exercise } from '../services/exercises';
 
 interface ExerciseIntroScreenProps {
@@ -18,6 +19,13 @@ export default function ExerciseIntroScreen({
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
   const media = getExerciseMedia(exercise.name);
+  const key = exerciseToKey(exercise.name);
+
+  const exerciseName = t(`exercises.${key}.name`, { defaultValue: exercise.name });
+  const exerciseDesc = t(`exercises.${key}.description`, { defaultValue: exercise.description });
+  const phase1 = t(`exercises.${key}.phase1`, { defaultValue: exercise.phase1_label });
+  const phase2 = t(`exercises.${key}.phase2`, { defaultValue: exercise.phase2_label });
+  const difficultyLabel = t(`difficulty.${exercise.difficulty}`);
 
   return (
     <div
@@ -96,7 +104,7 @@ export default function ExerciseIntroScreen({
           transition={{ delay: 0.2 }}
           className="text-xl font-bold text-white mb-1 text-center"
         >
-          {exercise.name}
+          {exerciseName}
         </motion.h1>
 
         {/* Difficulty badge */}
@@ -104,9 +112,9 @@ export default function ExerciseIntroScreen({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/5 text-slate-400 mb-4 capitalize"
+          className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/5 text-slate-400 mb-4"
         >
-          {exercise.difficulty}
+          {difficultyLabel}
         </motion.span>
 
         {/* Description */}
@@ -116,7 +124,7 @@ export default function ExerciseIntroScreen({
           transition={{ delay: 0.3 }}
           className="text-slate-400 text-sm leading-relaxed text-center mb-4"
         >
-          {exercise.description}
+          {exerciseDesc}
         </motion.p>
 
         {/* Phase labels preview */}
@@ -127,11 +135,11 @@ export default function ExerciseIntroScreen({
           className="flex items-center gap-3 mb-10"
         >
           <span className="text-xs px-3 py-1.5 rounded-lg bg-[#EF4444]/10 text-[#EF4444] font-medium">
-            {exercise.phase1_label}
+            {phase1}
           </span>
           <span className="text-slate-600 text-xs">/</span>
           <span className="text-xs px-3 py-1.5 rounded-lg bg-[#34D399]/10 text-[#34D399] font-medium">
-            {exercise.phase2_label}
+            {phase2}
           </span>
           <span className="text-slate-600 text-xs">
             · {exercise.sets} × {exercise.reps}

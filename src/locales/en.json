@@ -5,6 +5,175 @@
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
   },
+  "exercises": {
+    "pelvic_tilt": {
+      "name": "Pelvic Tilt",
+      "description": "Find the muscles and learn to tilt the pelvis for blood flow. Lie on your back with knees bent, gently tilt your pelvis upward, then release.",
+      "phase1": "Tilt",
+      "phase2": "Release"
+    },
+    "marching_feet_bridge": {
+      "name": "Marching Feet Bridge",
+      "description": "Lie on your back in bridge position. Alternate lifting each foot off the ground while maintaining hip height. Builds pelvic stability.",
+      "phase1": "Lift",
+      "phase2": "Lower"
+    },
+    "bent_leg_kickback": {
+      "name": "Bent Leg Kickback",
+      "description": "On all fours, kick one bent leg back and up, squeezing the glute at the top. Alternate legs. Activates the glute-pelvic connection.",
+      "phase1": "Kick",
+      "phase2": "Return"
+    },
+    "heel_glute_bridge": {
+      "name": "Heel Glute Bridge",
+      "description": "Strengthen the glute-pelvic floor connection. Push through your heels to lift your hips, squeeze at the top, then lower with control.",
+      "phase1": "Lift",
+      "phase2": "Lower"
+    },
+    "hip_abduction": {
+      "name": "Hip Abduction",
+      "description": "Lie on your side and lift the top leg, keeping hips stacked. Strengthens the outer hip and pelvic stabilizers.",
+      "phase1": "Open",
+      "phase2": "Close"
+    },
+    "bridge_abduction": {
+      "name": "Bridge Abduction",
+      "description": "In a glute bridge position, push knees apart against a resistance band. Combines bridge strength with abduction for pelvic power.",
+      "phase1": "Open",
+      "phase2": "Close"
+    },
+    "rear_decline_bridge": {
+      "name": "Rear Decline Bridge",
+      "description": "Maximum pressure to trap blood in the penis. Feet elevated on a surface, drive hips up with full glute engagement. The most intense bridge variation.",
+      "phase1": "Lift",
+      "phase2": "Lower"
+    },
+    "frog_reverse_hyperextension": {
+      "name": "Frog Reverse Hyperextension",
+      "description": "Lie face down on a bench with legs in a frog position. Lift legs by squeezing glutes. Targets deep pelvic floor muscles with high intensity.",
+      "phase1": "Lift",
+      "phase2": "Lower"
+    },
+    "sidekick_with_bent_knee": {
+      "name": "Sidekick with Bent Knee",
+      "description": "On all fours, kick one bent leg out to the side at hip height. Builds lateral pelvic stability under load.",
+      "phase1": "Kick",
+      "phase2": "Return"
+    },
+    "child_pose": {
+      "name": "Child Pose",
+      "description": "The ultimate reset to drop and relax the pelvic floor. Kneel and sit back on your heels, stretch arms forward, breathe deeply into your belly.",
+      "phase1": "Hold",
+      "phase2": "Breathe"
+    },
+    "cat_cow_stretch": {
+      "name": "Cat Cow Stretch",
+      "description": "On all fours, alternate between arching your back and rounding it. Releases pelvic floor tension and improves body awareness.",
+      "phase1": "Arch",
+      "phase2": "Round"
+    },
+    "prone_stretch": {
+      "name": "Prone Stretch",
+      "description": "Lie face down and gently press up through your hands, stretching the front of your body. Opens the hip flexors and releases pelvic tension.",
+      "phase1": "Stretch",
+      "phase2": "Release"
+    },
+    "lying_butterfly": {
+      "name": "Lying Butterfly",
+      "description": "Stretching the adductors to prevent tension spikes. Lie on your back, soles of feet together, let knees fall open. Breathe and release.",
+      "phase1": "Open",
+      "phase2": "Close"
+    },
+    "rocking_frog_stretch": {
+      "name": "Rocking Frog Stretch",
+      "description": "In a wide-knee position, rock forward and back gently. Deeply stretches the inner thighs and pelvic floor for better relaxation control.",
+      "phase1": "Rock",
+      "phase2": "Return"
+    },
+    "cat_cow_advanced": {
+      "name": "Cat Cow Advanced",
+      "description": "Deeper cat cow with intentional pelvic floor engagement. Focus on fully relaxing the floor during cow and gently lifting during cat.",
+      "phase1": "Arch",
+      "phase2": "Round"
+    },
+    "90_to_90_advanced": {
+      "name": "90 to 90 Advanced",
+      "description": "Extreme hip opening for maximum endurance. Sit with legs in 90-90 position, rotate your torso over the front leg, return to center.",
+      "phase1": "Rotate",
+      "phase2": "Return"
+    },
+    "figure_4_spinal_rotation": {
+      "name": "Figure 4 Spinal Rotation",
+      "description": "Lie on your back, cross one ankle over the opposite knee, rotate the stacked legs to one side. Deep release for the pelvic floor and hips.",
+      "phase1": "Rotate",
+      "phase2": "Return"
+    },
+    "90_to_90_transitions": {
+      "name": "90 to 90 Transitions",
+      "description": "Sit in 90-90, smoothly transition legs to the opposite 90-90 position. Builds fluid hip mobility essential for stamina control.",
+      "phase1": "Switch",
+      "phase2": "Hold"
+    },
+    "kneeling_ab_draw_in": {
+      "name": "Kneeling Ab Draw In",
+      "description": "Syncing your breath and deep core with your floor. On all fours, exhale and draw your belly button to your spine, engaging the pelvic floor.",
+      "phase1": "Draw In",
+      "phase2": "Release"
+    },
+    "pelvic_tilt_breathing": {
+      "name": "Pelvic Tilt Breathing",
+      "description": "Lie on your back, gently tilt your pelvis while exhaling. Coordinate breath with movement to build the core-floor connection.",
+      "phase1": "Tilt",
+      "phase2": "Release"
+    },
+    "marching_bridge_hold": {
+      "name": "Marching Bridge Hold",
+      "description": "In bridge position, alternate lifting each knee toward your chest while keeping hips level. Builds endurance in the pelvic stabilizers.",
+      "phase1": "March",
+      "phase2": "Hold"
+    },
+    "glute_march": {
+      "name": "Glute March",
+      "description": "Holding pelvic strength while legs are in motion. In bridge position, march legs with control while maintaining a strong hip lift.",
+      "phase1": "March",
+      "phase2": "Switch"
+    },
+    "rocking_frog_hold": {
+      "name": "Rocking Frog Hold",
+      "description": "Wide-knee frog position with a hold at the deepest point. Builds both stretch tolerance and pelvic floor endurance under tension.",
+      "phase1": "Rock",
+      "phase2": "Hold"
+    },
+    "abduction_march": {
+      "name": "Abduction March",
+      "description": "In bridge position, alternate between abducting knees and marching. Combines multiple demands on the pelvic floor for functional endurance.",
+      "phase1": "Open",
+      "phase2": "Close"
+    },
+    "squat_side_bends": {
+      "name": "Squat Side Bends",
+      "description": "Maintaining pelvic floor stability under a heavy load. In a squat stance, perform side bends while keeping the pelvic floor engaged throughout.",
+      "phase1": "Bend",
+      "phase2": "Return"
+    },
+    "90_to_90_endurance": {
+      "name": "90 to 90 Endurance",
+      "description": "In 90-90 position, rotate and hold at end range. Challenges the pelvic floor to maintain stability during prolonged loaded positions.",
+      "phase1": "Rotate",
+      "phase2": "Hold"
+    },
+    "sidekick_endurance": {
+      "name": "Sidekick Endurance",
+      "description": "On all fours, extend leg to the side and hold at the top. Sustained lateral pelvic demand builds lasting endurance.",
+      "phase1": "Kick",
+      "phase2": "Hold"
+    }
+  },
+  "difficulty": {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
   "library": {
     "title": "Exercises",
     "recommended_badge": "Recommended",

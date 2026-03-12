@@ -2,12 +2,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Clock, Repeat, HelpCircle, Layers } from 'lucide-react';
+import { exerciseToKey } from '../services/exercises';
 
 type Phase = 'phase1' | 'phase2' | 'rest';
 type TimerState = 'idle' | 'running' | 'paused' | 'completed';
 
 interface ProgramConfig {
   id: string;
+  name: string;
   contractSec: number;
   relaxSec: number;
   reps: number;
@@ -61,11 +63,13 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
   const phaseColor =
     phase === 'phase1' ? PHASE1_COLOR : phase === 'phase2' ? PHASE2_COLOR : REST_COLOR;
 
+  const key = exerciseToKey(program.name);
+
   const phaseLabel =
     phase === 'phase1'
-      ? program.phase1Label
+      ? t(`exercises.${key}.phase1`, { defaultValue: program.phase1Label })
       : phase === 'phase2'
-        ? program.phase2Label
+        ? t(`exercises.${key}.phase2`, { defaultValue: program.phase2Label })
         : t('timer.rest');
 
   const clearTimer = useCallback(() => {

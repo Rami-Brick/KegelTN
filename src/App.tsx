@@ -110,7 +110,7 @@ function App() {
       <ExerciseLibraryScreen
         userId={session.user.id}
         userProfile={userProfile}
-        onBack={() => setAppState('library')}
+        onBack={() => setAppState('home')}
         onSelectExercise={handleSelectExercise}
       />
     );
@@ -129,6 +129,7 @@ function App() {
       <TimerScreen
         program={{
           id: selectedExercise.id,
+          name: selectedExercise.name,
           contractSec: selectedExercise.phase1_seconds,
           relaxSec: selectedExercise.phase2_seconds,
           reps: selectedExercise.reps,
