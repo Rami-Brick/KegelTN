@@ -1,20 +1,41 @@
 import { useEffect, useState } from 'react';
 import { getSession, onAuthStateChange } from './services/auth';
 import { supabase } from './lib/supabase';
+import type { Exercise, UserProfile} from './services/exercises';
+import { deriveUserProfile } from './services/exercises';
 import LoginScreen from './screens/LoginScreen';
 import QuizScreen from './screens/QuizScreen';
 import HomeScreen from './screens/HomeScreen';
-import WorkoutScreen from './screens/WorkoutScreen';
+import ExerciseLibraryScreen from './screens/ExerciseLibraryScreen';
 import ExerciseIntroScreen from './screens/ExerciseIntroScreen';
-import TimerScreen, { PROGRAMS } from './screens/TimerScreen';
+import TimerScreen from './screens/TimerScreen';
 
-type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'workout' | 'exercise-intro' | 'timer';
+type AppState = 'loading' | 'login' | 'quiz' | 'home' | 'library' | 'exercise-intro' | 'timer';
 
 function App() {
   const [appState, setAppState] = useState<AppState>('loading');
   const [session, setSession] = useState<any>(null);
-  const [recommendedProgram, setRecommendedProgram] = useState('beginner');
-  const [selectedProgram, setSelectedProgram] = useState('beginner');
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    goalCategories: ['rigidity', 'stamina', 'endurance'],
+    difficulty: 'beginner',
+  });
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+
+  const loadUserData = async (s: any) => {
+    const { data } = await supabase
+      .from('quiz_results')
+      .select('id, recommended_program, answers')
+      .eq('user_id', s.user.id)
+      .maybeSingle();
+
+    if (data) {
+      const profile = deriveUserProfile(data.answers as Record<number, number>);
+      setUserProfile(profile);
+      setAppState('home');
+    } else {
+      setAppState('quiz');
+    }
+  };
 
   useEffect(() => {
     getSession().then(async (s) => {
@@ -23,19 +44,7 @@ function App() {
         return;
       }
       setSession(s);
-
-      const { data } = await supabase
-        .from('quiz_results')
-        .select('id, recommended_program')
-        .eq('user_id', s.user.id)
-        .maybeSingle();
-
-      if (data) {
-        setRecommendedProgram(data.recommended_program);
-        setAppState('home');
-      } else {
-        setAppState('quiz');
-      }
+      await loadUserData(s);
     });
 
     const { data: listener } = onAuthStateChange(async (s) => {
@@ -45,19 +54,7 @@ function App() {
         return;
       }
       setSession(s);
-
-      const { data } = await supabase
-        .from('quiz_results')
-        .select('id, recommended_program')
-        .eq('user_id', s.user.id)
-        .maybeSingle();
-
-      if (data) {
-        setRecommendedProgram(data.recommended_program);
-        setAppState('home');
-      } else {
-        setAppState('quiz');
-      }
+      await loadUserData(s);
     });
 
     return () => {
@@ -74,21 +71,22 @@ function App() {
       recommended_program: program,
     });
 
-    setRecommendedProgram(program);
+    const profile = deriveUserProfile(answers);
+    setUserProfile(profile);
     setAppState('home');
   };
 
-  const handleStartProgram = (programId: string) => {
-    setSelectedProgram(programId);
+  const handleSelectExercise = (exercise: Exercise) => {
+    setSelectedExercise(exercise);
     setAppState('exercise-intro');
   };
 
   const handleWorkoutComplete = async (durationSec: number, reps: number) => {
-    if (!session) return;
+    if (!session || !selectedExercise) return;
 
     await supabase.from('workouts').insert({
       user_id: session.user.id,
-      program: selectedProgram,
+      program: selectedExercise.id,
       duration_seconds: durationSec,
     });
   };
@@ -104,28 +102,37 @@ function App() {
   if (appState === 'login') return <LoginScreen />;
   if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} />;
 
-  if (appState === 'workout')
+  if (appState === 'library')
     return (
-      <WorkoutScreen
-        recommendedProgram={recommendedProgram}
+      <ExerciseLibraryScreen
+        userProfile={userProfile}
         onBack={() => setAppState('home')}
-        onStartProgram={handleStartProgram}
+        onSelectExercise={handleSelectExercise}
       />
     );
 
-  if (appState === 'exercise-intro')
+  if (appState === 'exercise-intro' && selectedExercise)
     return (
       <ExerciseIntroScreen
-        programName={selectedProgram.charAt(0).toUpperCase() + selectedProgram.slice(1)}
+        programName={selectedExercise.name}
         onStart={() => setAppState('timer')}
         onSkip={() => setAppState('timer')}
       />
     );
 
-  if (appState === 'timer')
+  if (appState === 'timer' && selectedExercise)
     return (
       <TimerScreen
-        program={PROGRAMS[selectedProgram]}
+        program={{
+          id: selectedExercise.id,
+          contractSec: selectedExercise.phase1_seconds,
+          relaxSec: selectedExercise.phase2_seconds,
+          reps: selectedExercise.reps,
+          sets: selectedExercise.sets,
+          restSeconds: selectedExercise.rest_seconds,
+          phase1Label: selectedExercise.phase1_label,
+          phase2Label: selectedExercise.phase2_label,
+        }}
         onQuit={() => setAppState('home')}
         onComplete={handleWorkoutComplete}
         onShowTutorial={() => setAppState('exercise-intro')}
@@ -135,7 +142,7 @@ function App() {
   return (
     <HomeScreen
       userId={session.user.id}
-      onStartWorkout={() => setAppState('workout')}
+      onStartWorkout={() => setAppState('library')}
     />
   );
 }

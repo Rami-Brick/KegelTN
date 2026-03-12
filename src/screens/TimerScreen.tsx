@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trophy, Clock, Repeat, HelpCircle } from 'lucide-react';
+import { X, Trophy, Clock, Repeat, HelpCircle, Layers } from 'lucide-react';
 
-type Phase = 'contract' | 'relax';
+type Phase = 'phase1' | 'phase2' | 'rest';
 type TimerState = 'idle' | 'running' | 'paused' | 'completed';
 
 interface ProgramConfig {
@@ -11,6 +11,10 @@ interface ProgramConfig {
   contractSec: number;
   relaxSec: number;
   reps: number;
+  sets: number;
+  restSeconds: number;
+  phase1Label: string;
+  phase2Label: string;
 }
 
 interface TimerScreenProps {
@@ -20,29 +24,23 @@ interface TimerScreenProps {
   onShowTutorial: () => void;
 }
 
-const PROGRAMS: Record<string, ProgramConfig> = {
-  beginner: { id: 'beginner', contractSec: 3, relaxSec: 3, reps: 10 },
-  intermediate: { id: 'intermediate', contractSec: 5, relaxSec: 5, reps: 10 },
-  advanced: { id: 'advanced', contractSec: 10, relaxSec: 10, reps: 10 },
-};
-
 const RING_SIZE = 260;
 const STROKE_WIDTH = 10;
 const RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-const CONTRACT_COLOR = '#EF4444';
-const RELAX_COLOR = '#34D399';
-
-export { PROGRAMS };
+const PHASE1_COLOR = '#EF4444';
+const PHASE2_COLOR = '#34D399';
+const REST_COLOR = '#4F8EF7';
 
 export default function TimerScreen({ program, onQuit, onComplete, onShowTutorial }: TimerScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
-  const [phase, setPhase] = useState<Phase>('contract');
+  const [phase, setPhase] = useState<Phase>('phase1');
   const [timeLeft, setTimeLeft] = useState(program.contractSec);
   const [currentRep, setCurrentRep] = useState(1);
+  const [currentSet, setCurrentSet] = useState(1);
   const [timerState, setTimerState] = useState<TimerState>('idle');
   const [showQuitModal, setShowQuitModal] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
@@ -50,10 +48,25 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
   const startTimeRef = useRef(Date.now());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const phaseDuration = phase === 'contract' ? program.contractSec : program.relaxSec;
+  const phaseDuration =
+    phase === 'phase1'
+      ? program.contractSec
+      : phase === 'phase2'
+        ? program.relaxSec
+        : program.restSeconds;
+
   const progress = timeLeft / phaseDuration;
   const dashOffset = CIRCUMFERENCE * (1 - progress);
-  const phaseColor = phase === 'contract' ? CONTRACT_COLOR : RELAX_COLOR;
+
+  const phaseColor =
+    phase === 'phase1' ? PHASE1_COLOR : phase === 'phase2' ? PHASE2_COLOR : REST_COLOR;
+
+  const phaseLabel =
+    phase === 'phase1'
+      ? program.phase1Label
+      : phase === 'phase2'
+        ? program.phase2Label
+        : t('timer.rest');
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -67,23 +80,36 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
     const totalSec = Math.round((Date.now() - startTimeRef.current) / 1000);
     setTimerState('completed');
     setShowComplete(true);
-    onComplete(totalSec, program.reps);
-  }, [clearTimer, onComplete, program.reps]);
+    onComplete(totalSec, program.reps * program.sets);
+  }, [clearTimer, onComplete, program.reps, program.sets]);
 
   const advancePhase = useCallback(() => {
-    if (phase === 'contract') {
-      setPhase('relax');
+    if (phase === 'phase1') {
+      setPhase('phase2');
       setTimeLeft(program.relaxSec);
-    } else {
+    } else if (phase === 'phase2') {
       if (currentRep >= program.reps) {
-        completeWorkout();
-        return;
+        // End of set
+        if (currentSet >= program.sets) {
+          completeWorkout();
+          return;
+        }
+        // Rest between sets
+        setPhase('rest');
+        setTimeLeft(program.restSeconds);
+      } else {
+        setCurrentRep((r) => r + 1);
+        setPhase('phase1');
+        setTimeLeft(program.contractSec);
       }
-      setCurrentRep((r) => r + 1);
-      setPhase('contract');
+    } else if (phase === 'rest') {
+      // Start next set
+      setCurrentSet((s) => s + 1);
+      setCurrentRep(1);
+      setPhase('phase1');
       setTimeLeft(program.contractSec);
     }
-  }, [phase, currentRep, program, completeWorkout]);
+  }, [phase, currentRep, currentSet, program, completeWorkout]);
 
   useEffect(() => {
     if (timerState !== 'running') return;
@@ -118,15 +144,11 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
     setShowQuitModal(true);
   };
 
-  const confirmQuit = () => {
-    onQuit();
-  };
+  const confirmQuit = () => onQuit();
 
   const cancelQuit = () => {
     setShowQuitModal(false);
-    if (timerState !== 'completed') {
-      setTimerState('running');
-    }
+    if (timerState !== 'completed') setTimerState('running');
   };
 
   // Completion screen
@@ -171,19 +193,26 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="flex gap-6 mb-10"
+          className="flex gap-4 mb-10"
         >
-          <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-6 py-4">
+          <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
             <Clock className="w-5 h-5 text-[#4F8EF7]" />
             <span className="text-white font-bold text-lg">
               {mins}:{secs.toString().padStart(2, '0')}
             </span>
             <span className="text-slate-500 text-xs">{t('timer.complete_duration')}</span>
           </div>
-          <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-6 py-4">
+          <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
             <Repeat className="w-5 h-5 text-[#4F8EF7]" />
-            <span className="text-white font-bold text-lg">{program.reps}</span>
+            <span className="text-white font-bold text-lg">
+              {program.reps * program.sets}
+            </span>
             <span className="text-slate-500 text-xs">{t('timer.complete_reps')}</span>
+          </div>
+          <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
+            <Layers className="w-5 h-5 text-[#4F8EF7]" />
+            <span className="text-white font-bold text-lg">{program.sets}</span>
+            <span className="text-slate-500 text-xs">{t('timer.complete_sets')}</span>
           </div>
         </motion.div>
 
@@ -214,9 +243,12 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
         <X className="w-5 h-5" />
       </button>
 
-      {/* Rep counter */}
-      <div className="pt-6">
-        <span className="text-slate-500 text-sm">
+      {/* Set & Rep counter */}
+      <div className="pt-6 flex flex-col items-center gap-1">
+        <span className="text-slate-500 text-xs">
+          {t('timer.set', { current: currentSet, total: program.sets })}
+        </span>
+        <span className="text-slate-400 text-sm">
           {t('timer.rep', { current: currentRep, total: program.reps })}
         </span>
       </div>
@@ -236,19 +268,18 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
                 className="text-lg font-bold tracking-wide uppercase"
                 style={{ color: phaseColor }}
               >
-                {t(`timer.${phase}`)}
+                {phaseLabel}
               </motion.p>
             </AnimatePresence>
           )}
         </div>
 
-        {/* Circular progress ring — tap to pause/resume */}
+        {/* Circular progress ring */}
         <button
           onClick={togglePause}
           className="relative focus:outline-none"
           style={{ width: RING_SIZE, height: RING_SIZE }}
         >
-          {/* Background glow */}
           <motion.div
             className="absolute inset-0 rounded-full"
             animate={{
@@ -260,12 +291,7 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
             transition={{ duration: 0.5 }}
           />
 
-          <svg
-            width={RING_SIZE}
-            height={RING_SIZE}
-            className="transform -rotate-90"
-          >
-            {/* Track */}
+          <svg width={RING_SIZE} height={RING_SIZE} className="transform -rotate-90">
             <circle
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
@@ -274,7 +300,6 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
               stroke="rgba(255,255,255,0.05)"
               strokeWidth={STROKE_WIDTH}
             />
-            {/* Progress */}
             <motion.circle
               cx={RING_SIZE / 2}
               cy={RING_SIZE / 2}
@@ -284,13 +309,15 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
               strokeWidth={STROKE_WIDTH}
               strokeLinecap="round"
               strokeDasharray={CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              animate={{ strokeDashoffset: dashOffset, stroke: phaseColor }}
+              strokeDashoffset={timerState === 'idle' ? CIRCUMFERENCE : dashOffset}
+              animate={{
+                strokeDashoffset: timerState === 'idle' ? CIRCUMFERENCE : dashOffset,
+                stroke: phaseColor,
+              }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
             />
           </svg>
 
-          {/* Center content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             {timerState === 'idle' ? (
               <motion.div

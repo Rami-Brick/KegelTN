@@ -5,6 +5,22 @@
     "button": "ابدأ التمرين",
     "error": "مفتاح الوصول غير صالح. حاول مرة أخرى."
   },
+  "library": {
+    "title": "التمارين",
+    "recommended_badge": "موصى به",
+    "featured_badge": "الأفضل لك",
+    "category_rigidity": "الصلابة والقوة",
+    "category_stamina": "التحمّل والتأخير",
+    "category_endurance": "التحمّل النشط",
+    "category_rigidity_sub": "صلابة الانتصاب",
+    "category_stamina_sub": "منع القذف المبكر",
+    "category_endurance_sub": "الاستمرار لفترة أطول",
+    "difficulty_beginner": "مبتدئ",
+    "difficulty_intermediate": "متوسط",
+    "difficulty_advanced": "متقدم",
+    "sets_info": "{{sets}} مجموعات · {{reps}} تكرار",
+    "back": "رجوع"
+  },
   "exercise_intro": {
     "title": "إليك كيفية القيام بالتمرين",
     "instruction": "اضغط على عضلات قاع الحوض — نفس العضلات التي تستخدمها لإيقاف التبول. امسك بقوة أثناء الشد، واسترخِ تمامًا أثناء الاسترخاء.",
@@ -24,10 +40,13 @@
     "quit_confirm": "هل أنت متأكد أنك تريد الخروج؟",
     "quit_yes": "نعم، اخرج",
     "quit_no": "تابع",
+    "rest": "استراحة",
+    "set": "المجموعة {{current}} من {{total}}",
     "complete_title": "!اكتمل التمرين",
     "complete_subtitle": "عمل رائع. الاستمرارية هي المفتاح.",
     "complete_duration": "المدة",
-    "complete_reps": "التكرارات المكتملة",
+    "complete_reps": "إجمالي التكرارات",
+    "complete_sets": "المجموعات",
     "complete_done": "العودة للرئيسية"
   },
   "workout": {

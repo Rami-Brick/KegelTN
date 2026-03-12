@@ -5,6 +5,22 @@
     "button": "Start Training",
     "error": "Invalid access key. Please try again."
   },
+  "library": {
+    "title": "Exercises",
+    "recommended_badge": "Recommended",
+    "featured_badge": "Best for you",
+    "category_rigidity": "Rigidity & Power",
+    "category_stamina": "Stamina & Delay",
+    "category_endurance": "Active Endurance",
+    "category_rigidity_sub": "Erection Hardness",
+    "category_stamina_sub": "Preventing PE",
+    "category_endurance_sub": "Lasting Longer",
+    "difficulty_beginner": "Beginner",
+    "difficulty_intermediate": "Intermediate",
+    "difficulty_advanced": "Advanced",
+    "sets_info": "{{sets}} sets · {{reps}} reps",
+    "back": "Back"
+  },
   "exercise_intro": {
     "title": "Here's how to do it",
     "instruction": "Squeeze your pelvic floor muscles — the same ones you'd use to stop urinating midstream. Hold tight during CONTRACT, release fully during RELAX.",
@@ -24,10 +40,13 @@
     "quit_confirm": "Are you sure you want to quit?",
     "quit_yes": "Yes, quit",
     "quit_no": "Keep going",
+    "rest": "Rest",
+    "set": "Set {{current}} of {{total}}",
     "complete_title": "Workout Complete!",
     "complete_subtitle": "Great job. Consistency is key.",
     "complete_duration": "Duration",
-    "complete_reps": "Reps completed",
+    "complete_reps": "Total reps",
+    "complete_sets": "Sets",
     "complete_done": "Back to Home"
   },
   "workout": {
