@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { loginWithKey } from '../services/auth';
-import logo from '../assets/logo.png';
+import logo from '../assets/images/logo.png';
 
 export default function LoginScreen() {
   const { t, i18n } = useTranslation();

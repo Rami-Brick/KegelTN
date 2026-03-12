@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getSession, onAuthStateChange } from './services/auth';
 import { supabase } from './lib/supabase';
-import type { Exercise, UserProfile} from './services/exercises';
-import { deriveUserProfile } from './services/exercises';
+import { deriveUserProfile, markExerciseComplete } from './services/exercises';
+import type { Exercise, UserProfile } from './services/exercises';
 import LoginScreen from './screens/LoginScreen';
 import QuizScreen from './screens/QuizScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -89,6 +89,9 @@ function App() {
       program: selectedExercise.id,
       duration_seconds: durationSec,
     });
+
+    // Mark this exercise as completed for progression
+    await markExerciseComplete(session.user.id, selectedExercise.id);
   };
 
   if (appState === 'loading') {
@@ -105,8 +108,9 @@ function App() {
   if (appState === 'library')
     return (
       <ExerciseLibraryScreen
+        userId={session.user.id}
         userProfile={userProfile}
-        onBack={() => setAppState('home')}
+        onBack={() => setAppState('library')}
         onSelectExercise={handleSelectExercise}
       />
     );
@@ -114,9 +118,9 @@ function App() {
   if (appState === 'exercise-intro' && selectedExercise)
     return (
       <ExerciseIntroScreen
-        programName={selectedExercise.name}
+        exercise={selectedExercise}
         onStart={() => setAppState('timer')}
-        onSkip={() => setAppState('timer')}
+        onBack={() => setAppState('library')}
       />
     );
 

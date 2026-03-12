@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ChevronDown, Star, Sparkles, Dumbbell } from 'lucide-react';
-import type { Exercise, UserProfile} from '../services/exercises';
+import { ChevronLeft, ChevronRight, ChevronDown, Dumbbell, CheckCircle2, ArrowRight } from 'lucide-react';
+import type { Exercise, UserProfile, ExerciseWithStatus } from '../services/exercises';
 import {
-  fetchExercises,
-  isRecommended,
-  isFeaturedForUser,
+  fetchActiveExercises,
+  fetchCompletions,
+  computeExerciseStatuses,
   CATEGORIES,
 } from '../services/exercises';
 
 interface ExerciseLibraryScreenProps {
+  userId: string;
   userProfile: UserProfile;
   onBack: () => void;
   onSelectExercise: (exercise: Exercise) => void;
 }
 
 const CATEGORY_ORDER = ['rigidity', 'stamina', 'endurance'];
-const DIFFICULTY_ORDER = ['beginner', 'intermediate', 'advanced'];
-
-const difficultyDots = (diff: string) => {
-  const level = DIFFICULTY_ORDER.indexOf(diff);
-  return Array.from({ length: 3 }, (_, i) => i <= level);
-};
 
 export default function ExerciseLibraryScreen({
+  userId,
   userProfile,
   onBack,
   onSelectExercise,
@@ -32,18 +28,24 @@ export default function ExerciseLibraryScreen({
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [exercises, setExercises] = useState<ExerciseWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(
     userProfile.goalCategories[0] ?? 'rigidity'
   );
 
   useEffect(() => {
-    fetchExercises().then((data) => {
-      setExercises(data);
+    async function load() {
+      const [exList, completions] = await Promise.all([
+        fetchActiveExercises(),
+        fetchCompletions(userId),
+      ]);
+      const withStatus = computeExerciseStatuses(exList, completions);
+      setExercises(withStatus);
       setLoading(false);
-    });
-  }, []);
+    }
+    load();
+  }, [userId]);
 
   const toggleCategory = (cat: string) => {
     setExpandedCategory((prev) => (prev === cat ? null : cat));
@@ -87,6 +89,7 @@ export default function ExerciseLibraryScreen({
             const cat = CATEGORIES[group.key];
             const isExpanded = expandedCategory === group.key;
             const isGoalCategory = userProfile.goalCategories.includes(group.key);
+            const completedCount = group.exercises.filter((e) => e.isCompleted).length;
 
             return (
               <motion.div
@@ -95,7 +98,7 @@ export default function ExerciseLibraryScreen({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: groupIdx * 0.1 }}
               >
-                {/* Category header — tap to expand/collapse */}
+                {/* Category header */}
                 <button
                   onClick={() => toggleCategory(group.key)}
                   className="w-full rounded-xl p-4 flex items-center gap-3 transition-all"
@@ -127,9 +130,14 @@ export default function ExerciseLibraryScreen({
                         </span>
                       )}
                     </div>
-                    <span className="text-slate-500 text-xs">
-                      {t(`library.category_${group.key}_sub`)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-500 text-xs">
+                        {t(`library.category_${group.key}_sub`)}
+                      </span>
+                      <span className="text-slate-600 text-[10px]">
+                        · {completedCount}/3
+                      </span>
+                    </div>
                   </div>
                   <ChevronDown
                     className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
@@ -149,89 +157,15 @@ export default function ExerciseLibraryScreen({
                       className="overflow-hidden"
                     >
                       <div className="pt-2 space-y-2">
-                        {group.exercises.map((exercise, idx) => {
-                          const recommended = isRecommended(exercise, userProfile);
-                          const featured = isFeaturedForUser(exercise, userProfile);
-
-                          return (
-                            <motion.button
-                              key={exercise.id}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: idx * 0.05 }}
-                              onClick={() => onSelectExercise(exercise)}
-                              whileTap={{ scale: 0.98 }}
-                              className={`w-full rounded-xl p-4 text-start transition-all ${
-                                featured
-                                  ? 'bg-white/[0.06] border'
-                                  : recommended
-                                    ? 'bg-white/[0.03] border border-white/5'
-                                    : 'bg-white/[0.02] border border-transparent'
-                              }`}
-                              style={{
-                                borderColor: featured ? `${cat.color}40` : undefined,
-                              }}
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-white text-sm font-medium">
-                                      {exercise.name}
-                                    </span>
-                                    {featured && (
-                                      <Sparkles
-                                        className="w-3.5 h-3.5 shrink-0"
-                                        style={{ color: cat.color }}
-                                      />
-                                    )}
-                                    {featured && (
-                                      <span
-                                        className="text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0"
-                                        style={{
-                                          backgroundColor: `${cat.color}20`,
-                                          color: cat.color,
-                                        }}
-                                      >
-                                        {t('library.featured_badge')}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
-                                    {exercise.description}
-                                  </p>
-                                </div>
-                              </div>
-
-                              {/* Bottom row: difficulty dots + sets/reps */}
-                              <div className="flex items-center justify-between mt-3">
-                                <div className="flex items-center gap-2">
-                                  <div className="flex gap-1">
-                                    {difficultyDots(exercise.difficulty).map((active, i) => (
-                                      <div
-                                        key={i}
-                                        className="w-1.5 h-1.5 rounded-full"
-                                        style={{
-                                          backgroundColor: active
-                                            ? cat.color
-                                            : 'rgba(255,255,255,0.1)',
-                                        }}
-                                      />
-                                    ))}
-                                  </div>
-                                  <span className="text-slate-600 text-[11px]">
-                                    {t(`library.difficulty_${exercise.difficulty}`)}
-                                  </span>
-                                </div>
-                                <span className="text-slate-600 text-[11px]">
-                                  {t('library.sets_info', {
-                                    sets: exercise.sets,
-                                    reps: exercise.reps,
-                                  })}
-                                </span>
-                              </div>
-                            </motion.button>
-                          );
-                        })}
+                        {group.exercises.map((exercise, idx) => (
+                          <ExerciseCard
+                            key={exercise.id}
+                            exercise={exercise}
+                            categoryColor={cat.color}
+                            index={idx}
+                            onSelect={() => onSelectExercise(exercise)}
+                          />
+                        ))}
                       </div>
                     </motion.div>
                   )}
@@ -242,5 +176,108 @@ export default function ExerciseLibraryScreen({
         </div>
       </div>
     </div>
+  );
+}
+
+function ExerciseCard({
+  exercise,
+  categoryColor,
+  index,
+  onSelect,
+}: {
+  exercise: ExerciseWithStatus;
+  categoryColor: string;
+  index: number;
+  onSelect: () => void;
+}) {
+  const { t } = useTranslation();
+
+  const difficultyLabel =
+    exercise.difficulty === 'beginner'
+      ? t('library.difficulty_beginner')
+      : exercise.difficulty === 'intermediate'
+        ? t('library.difficulty_intermediate')
+        : t('library.difficulty_advanced');
+
+  return (
+    <motion.button
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.06 }}
+      onClick={onSelect}
+      whileTap={{ scale: 0.98 }}
+      className={`w-full rounded-xl p-4 text-start transition-all relative ${
+        exercise.isCompleted
+          ? 'bg-white/[0.015] border border-white/[0.03]'
+          : exercise.isCurrentLevel
+            ? 'bg-white/[0.06] border'
+            : 'bg-white/[0.02] border border-white/5'
+      }`}
+      style={{
+        borderColor: exercise.isCurrentLevel ? `${categoryColor}50` : undefined,
+        opacity: exercise.isCompleted ? 0.5 : 1,
+      }}
+    >
+      {/* Difficulty label */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide"
+            style={{
+              backgroundColor: exercise.isCompleted
+                ? 'rgba(255,255,255,0.05)'
+                : `${categoryColor}15`,
+              color: exercise.isCompleted ? 'rgb(100,116,139)' : categoryColor,
+            }}
+          >
+            {difficultyLabel}
+          </span>
+          {exercise.isCurrentLevel && (
+            <span
+              className="text-[10px] font-medium px-1.5 py-0.5 rounded-full flex items-center gap-1"
+              style={{
+                backgroundColor: `${categoryColor}20`,
+                color: categoryColor,
+              }}
+            >
+              <ArrowRight className="w-2.5 h-2.5" />
+              {t('library.up_next')}
+            </span>
+          )}
+        </div>
+        {exercise.isCompleted && (
+          <CheckCircle2 className="w-4 h-4 text-slate-600" />
+        )}
+      </div>
+
+      {/* Exercise name */}
+      <h3
+        className={`text-sm font-medium mb-1 ${
+          exercise.isCompleted ? 'text-slate-500' : 'text-white'
+        }`}
+      >
+        {exercise.name}
+      </h3>
+
+      {/* Description */}
+      <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed mb-3">
+        {exercise.description}
+      </p>
+
+      {/* Sets/reps info */}
+      <div className="flex items-center justify-between">
+        <span className="text-slate-600 text-[11px]">
+          {t('library.sets_info', { sets: exercise.sets, reps: exercise.reps })}
+        </span>
+        {!exercise.isCompleted && (
+          <span
+            className="text-[11px] font-medium"
+            style={{ color: categoryColor }}
+          >
+            {exercise.phase1_label} / {exercise.phase2_label}
+          </span>
+        )}
+      </div>
+    </motion.button>
   );
 }

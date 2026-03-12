@@ -19,13 +19,15 @@
     "difficulty_intermediate": "Intermediate",
     "difficulty_advanced": "Advanced",
     "sets_info": "{{sets}} sets · {{reps}} reps",
+    "up_next": "Up next",
     "back": "Back"
   },
   "exercise_intro": {
     "title": "Here's how to do it",
     "instruction": "Squeeze your pelvic floor muscles — the same ones you'd use to stop urinating midstream. Hold tight during CONTRACT, release fully during RELAX.",
     "start": "I'm Ready",
-    "skip": "Skip"
+    "skip": "Skip",
+    "video_coming": "Video coming soon"
   },
   "timer": {
     "contract": "Contract",

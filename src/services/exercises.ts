@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { ACTIVE_EXERCISES } from '../config/exercises';
 
 export interface Exercise {
   id: string;
@@ -18,19 +19,21 @@ export interface Exercise {
 }
 
 export interface UserProfile {
-  goalCategories: string[];   // ['rigidity', 'stamina', 'endurance']
-  difficulty: string;         // 'beginner' | 'intermediate' | 'advanced'
+  goalCategories: string[];
+  difficulty: string;
 }
+
+export interface ExerciseWithStatus extends Exercise {
+  isCompleted: boolean;
+  isCurrentLevel: boolean;  // the next one to do in progression
+}
+
+const DIFFICULTY_ORDER = ['beginner', 'intermediate', 'advanced'];
 
 /**
  * Derive user profile from quiz answers
- * 
- * Quiz answer indices (0-based):
- * Q2 (index 1): 0 = Stronger erections, 1 = Last longer, 2 = Both
- * Q4-Q7 (index 3-6): 0 = worst, 3 = best (ability scores)
  */
 export function deriveUserProfile(answers: Record<number, number>): UserProfile {
-  // Map goal from Q2
   const goalAnswer = answers[1] ?? 2;
   let goalCategories: string[];
 
@@ -42,52 +45,97 @@ export function deriveUserProfile(answers: Record<number, number>): UserProfile 
     goalCategories = ['rigidity', 'stamina', 'endurance'];
   }
 
-  // Derive difficulty from Q4-Q7 (ability scores)
   const abilityScore =
     (answers[3] ?? 0) + (answers[4] ?? 0) + (answers[5] ?? 0) + (answers[6] ?? 0);
 
   let difficulty: string;
-  if (abilityScore <= 4) {
-    difficulty = 'beginner';
-  } else if (abilityScore <= 8) {
-    difficulty = 'intermediate';
-  } else {
-    difficulty = 'advanced';
-  }
+  if (abilityScore <= 4) difficulty = 'beginner';
+  else if (abilityScore <= 8) difficulty = 'intermediate';
+  else difficulty = 'advanced';
 
   return { goalCategories, difficulty };
 }
 
 /**
- * Check if an exercise is recommended for this user
+ * Fetch only the active (configured) exercises from Supabase
  */
-export function isRecommended(exercise: Exercise, profile: UserProfile): boolean {
-  return (
-    profile.goalCategories.includes(exercise.category) &&
-    exercise.difficulty === profile.difficulty
-  );
-}
+export async function fetchActiveExercises(): Promise<Exercise[]> {
+  // Collect all active exercise names
+  const activeNames: string[] = [];
+  for (const cat of Object.values(ACTIVE_EXERCISES)) {
+    activeNames.push(cat.beginner, cat.intermediate, cat.advanced);
+  }
 
-/**
- * Check if an exercise is the featured/star pick for this user
- */
-export function isFeaturedForUser(exercise: Exercise, profile: UserProfile): boolean {
-  return isRecommended(exercise, profile) && exercise.featured;
-}
-
-/**
- * Fetch all exercises from Supabase
- */
-export async function fetchExercises(): Promise<Exercise[]> {
   const { data, error } = await supabase
     .from('exercises')
     .select('*')
-    .order('category')
-    .order('difficulty')
-    .order('sort_order');
+    .in('name', activeNames);
 
   if (error) throw new Error(error.message);
   return data ?? [];
+}
+
+/**
+ * Fetch which exercises the user has completed
+ */
+export async function fetchCompletions(userId: string): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('exercise_completions')
+    .select('exercise_id')
+    .eq('user_id', userId);
+
+  if (error) throw new Error(error.message);
+  return new Set((data ?? []).map((r) => r.exercise_id));
+}
+
+/**
+ * Mark an exercise as completed
+ */
+export async function markExerciseComplete(userId: string, exerciseId: string) {
+  const { error } = await supabase
+    .from('exercise_completions')
+    .upsert({ user_id: userId, exercise_id: exerciseId }, { onConflict: 'user_id,exercise_id' });
+
+  if (error) throw new Error(error.message);
+}
+
+/**
+ * Given exercises and completions, compute status for each exercise per category
+ * 
+ * For each category:
+ * - Completed exercises are marked isCompleted = true
+ * - The first non-completed exercise (in difficulty order) is isCurrentLevel = true
+ * - Others are neither
+ */
+export function computeExerciseStatuses(
+  exercises: Exercise[],
+  completions: Set<string>
+): ExerciseWithStatus[] {
+  const result: ExerciseWithStatus[] = [];
+
+  const categories = Object.keys(ACTIVE_EXERCISES);
+
+  for (const cat of categories) {
+    const catExercises = exercises
+      .filter((e) => e.category === cat)
+      .sort((a, b) => DIFFICULTY_ORDER.indexOf(a.difficulty) - DIFFICULTY_ORDER.indexOf(b.difficulty));
+
+    let foundCurrent = false;
+
+    for (const exercise of catExercises) {
+      const isCompleted = completions.has(exercise.id);
+      let isCurrentLevel = false;
+
+      if (!isCompleted && !foundCurrent) {
+        isCurrentLevel = true;
+        foundCurrent = true;
+      }
+
+      result.push({ ...exercise, isCompleted, isCurrentLevel });
+    }
+  }
+
+  return result;
 }
 
 /**
