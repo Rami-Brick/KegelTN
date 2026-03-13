@@ -82,7 +82,7 @@ function App() {
     setAppState('exercise-intro');
   };
 
-  const handleWorkoutComplete = async (durationSec: number, reps: number) => {
+  const handleWorkoutComplete = async (durationSec: number) => {
     if (!session || !selectedExercise) return;
 
     await supabase.from('workouts').insert({
