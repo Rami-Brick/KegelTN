@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ChevronLeft, ChevronRight, Target, BarChart3, Calendar, Sparkles } from 'lucide-react';
+import {
+  Check, ChevronLeft, ChevronRight, Target, BarChart3, Calendar,
+  Sparkles, Dumbbell, Clock, Heart, Globe,
+} from 'lucide-react';
 
 type QuizAnswers = Record<number, number>;
 
@@ -10,23 +13,38 @@ interface QuizScreenProps {
 }
 
 const QUESTIONS = [
-  { key: 'q1', options: 4 },
-  { key: 'q2', options: 3 },
-  { key: 'q3', options: 4 },
-  { key: 'q4', options: 4 },
-  { key: 'q5', options: 4 },
-  { key: 'q6', options: 4 },
-  { key: 'q7', options: 4 },
-  { key: 'q8', options: 4 },
+  { key: 'q1', options: 4, icon: Calendar },
+  { key: 'q2', options: 3, icon: Target },
+  { key: 'q3', options: 4, icon: BarChart3 },
+  { key: 'q4', options: 4, icon: Dumbbell },
+  { key: 'q5', options: 4, icon: Clock },
+  { key: 'q6', options: 4, icon: Heart },
 ];
 
+/**
+ * New recommendation algorithm:
+ * Q2 (index 1) → categories
+ * Q3 (index 2) + Q4 (index 3) → difficulty (combined score 0-6)
+ * Q1 (index 0) → age modifier (46+ caps at intermediate)
+ */
 function deriveProgram(answers: QuizAnswers): string {
-  const score =
-    (answers[3] ?? 0) + (answers[4] ?? 0) + (answers[5] ?? 0) + (answers[6] ?? 0);
-  if (score <= 4) return 'beginner';
-  if (score <= 8) return 'intermediate';
-  return 'advanced';
+  const abilityScore = (answers[2] ?? 0) + (answers[3] ?? 0);
+  const age = answers[0] ?? 0;
+
+  let difficulty: string;
+  if (abilityScore <= 2) difficulty = 'beginner';
+  else if (abilityScore <= 4) difficulty = 'intermediate';
+  else difficulty = 'advanced';
+
+  // Age safety cap: 46+ cannot start at advanced
+  if (age === 3 && difficulty === 'advanced') {
+    difficulty = 'intermediate';
+  }
+
+  return difficulty;
 }
+
+const ICON_COLORS = ['#4F8EF7', '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
 
 export default function QuizScreen({ onComplete }: QuizScreenProps) {
   const { t, i18n } = useTranslation();
@@ -41,6 +59,8 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
   const progress = ((step + 1) / total) * 100;
   const currentQ = QUESTIONS[step];
   const selectedOption = answers[step];
+  const IconComponent = currentQ.icon;
+  const iconColor = ICON_COLORS[step];
 
   const selectOption = (optionIndex: number) => {
     setAnswers((prev) => ({ ...prev, [step]: optionIndex }));
@@ -68,18 +88,9 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
   const program = deriveProgram(answers);
 
   const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 80 : -80,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -80 : 80,
-      opacity: 0,
-    }),
+    enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -80 : 80, opacity: 0 }),
   };
 
   if (showResults) {
@@ -119,6 +130,9 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
             transition={{ delay: 0.4 }}
             className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6 mb-6"
           >
+            <p className="text-center text-[#4F8EF7] text-sm font-medium mb-1">
+              {t('quiz.results.subtitle')}
+            </p>
             <p className="text-center text-white text-2xl font-bold">
               {t('quiz.results.program', {
                 program: t(`quiz.results.${program}`),
@@ -187,7 +201,13 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
           <span className="text-slate-500 text-sm">
             {t('quiz.progress', { current: step + 1, total })}
           </span>
-          <div className="w-10" />
+          <button
+            onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            <Globe className="w-4 h-4" />
+            <span>{isArabic ? 'EN' : 'عربي'}</span>
+          </button>
         </div>
 
         {/* Progress bar */}
@@ -214,6 +234,22 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="flex-1 flex flex-col"
           >
+            {/* Animated icon */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style={{ backgroundColor: `${iconColor}15` }}
+            >
+              <motion.div
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <IconComponent className="w-7 h-7" style={{ color: iconColor }} />
+              </motion.div>
+            </motion.div>
+
             {/* Title & subtitle */}
             <h1 className="text-2xl font-bold text-white mb-2">
               {t(`quiz.${currentQ.key}.title`)}

@@ -289,57 +289,41 @@
     "q2": {
       "title": "What's your main goal?",
       "subtitle": "We'll focus your training on this",
-      "o1": "Stronger erections",
+      "o1": "Harder, stronger erections",
       "o2": "Last longer in bed",
-      "o3": "Both"
+      "o3": "Both — full improvement"
     },
     "q3": {
-      "title": "What would you most like to improve?",
-      "subtitle": "Be specific — this shapes your plan",
-      "o1": "Get harder erections",
-      "o2": "Maintain hardness longer",
-      "o3": "Control when I finish",
-      "o4": "Overall sexual confidence"
+      "title": "How would you describe your current level?",
+      "subtitle": "Be honest — this shapes your starting point",
+      "o1": "I struggle significantly",
+      "o2": "Below average — room for improvement",
+      "o3": "Average — want to be better",
+      "o4": "Good — looking for an extra edge"
     },
     "q4": {
-      "title": "How would you rate your erection quality?",
-      "subtitle": "Be honest — no judgment here",
-      "o1": "Weak – I struggle to get fully hard",
-      "o2": "Average – works but could be better",
-      "o3": "Good – just want to improve more",
-      "o4": "Strong – looking for an extra edge"
+      "title": "Have you done pelvic floor exercises before?",
+      "subtitle": "Any kegel or similar training counts",
+      "o1": "Never heard of them",
+      "o2": "Heard of them but never tried",
+      "o3": "Tried a few times",
+      "o4": "I practice regularly"
     },
     "q5": {
-      "title": "Can you maintain your erection during sex?",
-      "subtitle": "This helps us gauge your baseline",
-      "o1": "I often lose it during sex",
-      "o2": "Sometimes it fades",
-      "o3": "Usually fine, occasional issues",
-      "o4": "No problems at all"
-    },
-    "q6": {
-      "title": "How's your control over finishing?",
-      "subtitle": "This determines your endurance focus",
-      "o1": "Very little control",
-      "o2": "Some control, but not enough",
-      "o3": "Decent control most of the time",
-      "o4": "Full control"
-    },
-    "q7": {
-      "title": "How would you describe your sex drive?",
-      "subtitle": "Libido affects training approach",
-      "o1": "Low – rarely in the mood",
-      "o2": "Moderate – comes and goes",
-      "o3": "High – often in the mood",
-      "o4": "Very high"
-    },
-    "q8": {
       "title": "How often can you commit to training?",
       "subtitle": "Consistency matters more than intensity",
       "o1": "Every day",
       "o2": "4–5 times a week",
       "o3": "2–3 times a week",
       "o4": "When I remember"
+    },
+    "q6": {
+      "title": "What motivates you most?",
+      "subtitle": "This helps us keep you on track",
+      "o1": "More confidence in bed",
+      "o2": "Stronger performance",
+      "o3": "Partner satisfaction",
+      "o4": "Overall health & wellness"
     },
     "results": {
       "title": "Your personalized plan is ready",

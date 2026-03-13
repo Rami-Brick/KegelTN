@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Flame, CheckCircle2, Circle, HelpCircle, LogOut, ChevronRight } from 'lucide-react';
+import { Flame, CheckCircle2, Circle, HelpCircle, LogOut, ChevronRight, Globe } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { logout } from '../services/auth';
 
@@ -103,12 +103,13 @@ export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: Ho
       </button>
 
       {/* Language toggle */}
-      <button
-        onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
-        className="absolute top-6 left-6 text-sm text-slate-500 hover:text-white transition-colors"
-      >
-        {isArabic ? 'EN' : 'عربي'}
-      </button>
+       <button
+          onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+          className="absolute top-6 left-6 text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-2"
+        >
+          <Globe className="w-4 h-4" />
+          <span>{isArabic ? 'EN' : 'عربي'}</span>
+        </button>
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm">
