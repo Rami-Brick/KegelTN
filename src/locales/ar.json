@@ -28,6 +28,11 @@
     "activity_title": "النشاط",
     "progression_title": "التقدم",
     "progression_completed": "{{count}} من 3 مكتمل",
+    "retake_quiz": "إعادة الاختبار",
+    "reset_progress": "إعادة تعيين التقدم",
+    "reset_confirm": "هل أنت متأكد أنك تريد إعادة تعيين كل تقدم التمارين؟",
+    "reset_yes": "نعم، أعد التعيين",
+    "reset_no": "إلغاء",
     "home_card": "رحلتي",
     "home_card_sub": "عرض تقدمك وإحصائياتك"
   },

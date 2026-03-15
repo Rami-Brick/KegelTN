@@ -151,6 +151,7 @@ function App() {
         userId={session.user.id}
         userProfile={userProfile}
         onBack={() => setAppState('home')}
+        onRetakeQuiz={() => setAppState('quiz')}
       />
     );
 

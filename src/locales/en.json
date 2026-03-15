@@ -28,6 +28,11 @@
     "activity_title": "Activity",
     "progression_title": "Progression",
     "progression_completed": "{{count}} of 3 completed",
+    "retake_quiz": "Retake Quiz",
+    "reset_progress": "Reset Progression",
+    "reset_confirm": "Are you sure you want to reset all exercise progress?",
+    "reset_yes": "Yes, reset",
+    "reset_no": "Cancel",
     "home_card": "My Journey",
     "home_card_sub": "View your progress & stats"
   },

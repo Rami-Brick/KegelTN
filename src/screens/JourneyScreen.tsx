@@ -1,19 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft, ChevronRight, LogOut, User, Target, TrendingUp,
   Flame, Dumbbell, Clock, CheckCircle2, Circle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { logout } from '../services/auth';
-import { fetchActiveExercises, fetchCompletions, exerciseToKey, CATEGORIES } from '../services/exercises';
+import { fetchActiveExercises, fetchCompletions, computeExerciseStatuses, exerciseToKey, CATEGORIES, resetProgression, deleteQuizResults } from '../services/exercises';
 import type { UserProfile, Exercise } from '../services/exercises';
 
 interface JourneyScreenProps {
   userId: string;
   userProfile: UserProfile;
   onBack: () => void;
+  onRetakeQuiz: () => void;
 }
 
 interface Stats {
@@ -103,13 +104,14 @@ function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
   );
 }
 
-export default function JourneyScreen({ userId, userProfile, onBack }: JourneyScreenProps) {
+export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQuiz }: JourneyScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
   const [stats, setStats] = useState<Stats>({ totalWorkouts: 0, streak: 0, totalMinutes: 0, workoutDates: [] });
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -256,6 +258,24 @@ export default function JourneyScreen({ userId, userProfile, onBack }: JourneySc
             <p className="text-slate-500 text-xs leading-relaxed italic">
               {t(`journey.${motivationKey}`)}
             </p>
+            {/* Quiz & progression actions */}
+            <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
+              <button
+                onClick={async () => {
+                  await deleteQuizResults(userId);
+                  onRetakeQuiz();
+                }}
+                className="flex-1 py-2 rounded-lg bg-white/5 text-slate-400 text-xs font-medium hover:bg-white/10 transition-colors"
+              >
+                {t('journey.retake_quiz')}
+              </button>
+              <button
+                onClick={() => setShowResetModal(true)}
+                className="flex-1 py-2 rounded-lg bg-white/5 text-slate-400 text-xs font-medium hover:bg-white/10 transition-colors"
+              >
+                {t('journey.reset_progress')}
+              </button>
+            </div>
           </motion.div>
 
           {/* Stats */}
@@ -354,6 +374,62 @@ export default function JourneyScreen({ userId, userProfile, onBack }: JourneySc
 
         </div>
       </div>
+
+      {/* Reset confirmation modal */}
+      <AnimatePresence>
+        {showResetModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 flex items-center justify-center px-6 z-20"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-sm bg-[#141A2E] border border-white/10 rounded-2xl p-6"
+            >
+              <p className="text-white text-lg font-semibold text-center mb-6">
+                {t('journey.reset_confirm')}
+              </p>
+              <div className="flex gap-3">
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setShowResetModal(false)}
+                  className="flex-1 py-3 rounded-xl bg-white/5 text-white font-medium text-sm"
+                >
+                  {t('journey.reset_no')}
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  onClick={async () => {
+                    await resetProgression(userId);
+                    setShowResetModal(false);
+                    // Reload the page data
+                    setLoading(true);
+                    const [exList, completions] = await Promise.all([
+                      fetchActiveExercises(),
+                      fetchCompletions(userId),
+                    ]);
+                    const withStatus = computeExerciseStatuses(exList, completions);
+                    setCategoryProgress(CATEGORY_ORDER.map((cat) => ({
+                      category: cat,
+                      exercises: withStatus
+                        .filter((e) => e.category === cat)
+                        .map((e) => ({ name: e.name, completed: e.isCompleted, difficulty: e.difficulty })),
+                    })));
+                    setLoading(false);
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-red-500/20 text-red-400 font-medium text-sm"
+                >
+                  {t('journey.reset_yes')}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -139,6 +139,30 @@ export function computeExerciseStatuses(
 }
 
 /**
+ * Reset all exercise completions for a user
+ */
+export async function resetProgression(userId: string) {
+  const { error } = await supabase
+    .from('exercise_completions')
+    .delete()
+    .eq('user_id', userId);
+
+  if (error) throw new Error(error.message);
+}
+
+/**
+ * Delete quiz results for a user (for retaking)
+ */
+export async function deleteQuizResults(userId: string) {
+  const { error } = await supabase
+    .from('quiz_results')
+    .delete()
+    .eq('user_id', userId);
+
+  if (error) throw new Error(error.message);
+}
+
+/**
  * Convert exercise name to translation key
  * e.g., "Pelvic Tilt" → "pelvic_tilt"
  * e.g., "90 to 90 Advanced" → "90_to_90_advanced"
