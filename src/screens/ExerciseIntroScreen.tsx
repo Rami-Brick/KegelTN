@@ -28,11 +28,8 @@ export default function ExerciseIntroScreen({
   const difficultyLabel = t(`difficulty.${exercise.difficulty}`);
 
   return (
-    <div
-      className="min-h-screen bg-[#0A0F1E] flex flex-col items-center justify-center px-6"
-      dir={isArabic ? 'rtl' : 'ltr'}
-    >
-      {/* Back button */}
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col items-center justify-center px-6">
+      {/* Back button — always top-left */}
       <button
         onClick={onBack}
         className="absolute top-6 left-6 w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors"

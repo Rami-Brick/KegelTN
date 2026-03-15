@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Check, ChevronLeft, ChevronRight, Target, BarChart3, Calendar,
+  Check, ChevronLeft, Target, BarChart3, Calendar,
   Sparkles, Dumbbell, Clock, Heart, Globe,
 } from 'lucide-react';
 
@@ -95,7 +95,7 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
 
   if (showResults) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] flex flex-col" dir={isArabic ? 'rtl' : 'ltr'}>
+      <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center px-6">
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
@@ -187,7 +187,7 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] flex flex-col" dir={isArabic ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
       {/* Header */}
       <div className="px-6 pt-6 pb-4">
         <div className="flex items-center justify-between mb-4">
@@ -196,7 +196,7 @@ export default function QuizScreen({ onComplete }: QuizScreenProps) {
             disabled={step === 0}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white disabled:opacity-0 transition-all"
           >
-            {isArabic ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            <ChevronLeft className="w-5 h-5" />
           </button>
           <span className="text-slate-500 text-sm">
             {t('quiz.progress', { current: step + 1, total })}

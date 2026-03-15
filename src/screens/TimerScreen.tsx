@@ -166,10 +166,7 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
     const secs = totalSec % 60;
 
     return (
-      <div
-        className="min-h-screen bg-[#0A0F1E] flex flex-col items-center justify-center px-6"
-        dir={isArabic ? 'rtl' : 'ltr'}
-      >
+      <div className="min-h-screen bg-[#0A0F1E] flex flex-col items-center justify-center px-6">
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -239,10 +236,7 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
   }
 
   return (
-    <div
-      className="min-h-screen bg-[#0A0F1E] flex flex-col items-center relative"
-      dir={isArabic ? 'rtl' : 'ltr'}
-    >
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col items-center relative">
       {/* Quit button */}
       <button
         onClick={handleQuit}
@@ -377,9 +371,9 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
               layout
               className="relative rounded-2xl overflow-hidden bg-white/[0.03] border border-white/10"
               style={{
-                width: mediaExpanded ? '100%' : 80,
-                height: mediaExpanded ? 200 : 80,
-                maxWidth: 320,
+                width: mediaExpanded ? '100%' : 120,
+                height: mediaExpanded ? 300 : 120,
+                maxWidth: 480,
               }}
             >
               {media.type === 'gif' || media.type === 'image' ? (

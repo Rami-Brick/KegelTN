@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ChevronDown, Dumbbell, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronDown, Dumbbell, CheckCircle2, ArrowRight } from 'lucide-react';
 import type { Exercise, UserProfile, ExerciseWithStatus } from '../services/exercises';
 import {
   fetchActiveExercises,
@@ -66,18 +66,15 @@ export default function ExerciseLibraryScreen({
   }
 
   return (
-    <div
-      className="min-h-screen bg-[#0A0F1E] flex flex-col"
-      dir={isArabic ? 'rtl' : 'ltr'}
-    >
-      {/* Header */}
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
+      {/* Header — back always left */}
       <div className="px-6 pt-6 pb-4">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors"
           >
-            {isArabic ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            <ChevronLeft className="w-5 h-5" />
           </button>
           <h1 className="text-xl font-bold text-white">{t('library.title')}</h1>
         </div>

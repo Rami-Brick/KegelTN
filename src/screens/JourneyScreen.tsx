@@ -182,15 +182,15 @@ export default function JourneyScreen({ userId, userProfile, onBack }: JourneySc
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] flex flex-col" dir={isArabic ? 'rtl' : 'ltr'}>
-      {/* Header */}
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
+      {/* Header — back always left, logout always right */}
       <div className="px-6 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors"
           >
-            {isArabic ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            <ChevronLeft className="w-5 h-5" />
           </button>
           <h1 className="text-xl font-bold text-white">{t('journey.title')}</h1>
         </div>
