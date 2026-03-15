@@ -261,10 +261,7 @@ export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQui
             {/* Quiz & progression actions */}
             <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
               <button
-                onClick={async () => {
-                  await deleteQuizResults(userId);
-                  onRetakeQuiz();
-                }}
+                onClick={onRetakeQuiz}
                 className="flex-1 py-2 rounded-lg bg-white/5 text-slate-400 text-xs font-medium hover:bg-white/10 transition-colors"
               >
                 {t('journey.retake_quiz')}

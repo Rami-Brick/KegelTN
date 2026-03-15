@@ -10,6 +10,7 @@ type QuizAnswers = Record<number, number>;
 
 interface QuizScreenProps {
   onComplete: (answers: QuizAnswers, program: string) => void;
+  initialAnswers?: QuizAnswers;
 }
 
 const QUESTIONS = [
@@ -46,12 +47,12 @@ function deriveProgram(answers: QuizAnswers): string {
 
 const ICON_COLORS = ['#4F8EF7', '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
 
-export default function QuizScreen({ onComplete }: QuizScreenProps) {
+export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers ?? {});
   const [direction, setDirection] = useState(1);
   const [showResults, setShowResults] = useState(false);
 

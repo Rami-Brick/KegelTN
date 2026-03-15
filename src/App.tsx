@@ -21,6 +21,7 @@ function App() {
     difficulty: 'beginner',
   });
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, number> | null>(null);
 
   const loadUserData = async (s: any) => {
     const { data } = await supabase
@@ -31,6 +32,7 @@ function App() {
 
     if (data) {
       const profile = deriveUserProfile(data.answers as Record<number, number>);
+      setQuizAnswers(data.answers as Record<number, number>);
       setUserProfile(profile);
       setAppState('home');
     } else {
@@ -66,6 +68,8 @@ function App() {
   const handleQuizComplete = async (answers: Record<number, number>, program: string) => {
     if (!session) return;
 
+    // Delete old results first, then insert new
+    await supabase.from('quiz_results').delete().eq('user_id', session.user.id);
     await supabase.from('quiz_results').insert({
       user_id: session.user.id,
       answers,
@@ -74,6 +78,7 @@ function App() {
 
     const profile = deriveUserProfile(answers);
     setUserProfile(profile);
+    setQuizAnswers(answers);
     setAppState('home');
   };
 
@@ -104,7 +109,7 @@ function App() {
   }
 
   if (appState === 'login') return <LoginScreen />;
-  if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} />;
+  if (appState === 'quiz') return <QuizScreen onComplete={handleQuizComplete} initialAnswers={quizAnswers ?? undefined} />;
 
   if (appState === 'library')
     return (
