@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trophy, Clock, Repeat, HelpCircle, Layers } from 'lucide-react';
+import { X, Trophy, Clock, Repeat, HelpCircle, Layers, Maximize2, Minimize2 } from 'lucide-react';
 import { exerciseToKey } from '../services/exercises';
+import { getExerciseMedia } from '../config/media';
 
 type Phase = 'phase1' | 'phase2' | 'rest';
 type TimerState = 'idle' | 'running' | 'paused' | 'completed';
@@ -46,6 +47,9 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
   const [timerState, setTimerState] = useState<TimerState>('idle');
   const [showQuitModal, setShowQuitModal] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
+  const [mediaExpanded, setMediaExpanded] = useState(false);
+
+  const media = getExerciseMedia(program.name);
 
   const startTimeRef = useRef(Date.now());
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -364,15 +368,59 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
         </button>
       </div>
 
-      {/* Tutorial link */}
-      <div className="pb-8">
-        <button
-          onClick={onShowTutorial}
-          className="flex items-center gap-1.5 text-slate-600 hover:text-slate-400 transition-colors mx-auto"
-        >
-          <HelpCircle className="w-3.5 h-3.5" />
-          <span className="text-xs underline">{t('timer.show_tutorial')}</span>
-        </button>
+      {/* Exercise demo mini player */}
+      <div className="pb-6 px-6">
+        {media ? (
+          <motion.div layout className="flex flex-col items-center">
+            <motion.button
+              onClick={() => setMediaExpanded((prev) => !prev)}
+              layout
+              className="relative rounded-2xl overflow-hidden bg-white/[0.03] border border-white/10"
+              style={{
+                width: mediaExpanded ? '100%' : 80,
+                height: mediaExpanded ? 200 : 80,
+                maxWidth: 320,
+              }}
+            >
+              {media.type === 'gif' || media.type === 'image' ? (
+                <img
+                  src={media.src}
+                  alt={program.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <video
+                  src={media.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              )}
+              <div className="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center">
+                {mediaExpanded ? (
+                  <Minimize2 className="w-3 h-3 text-white" />
+                ) : (
+                  <Maximize2 className="w-3 h-3 text-white" />
+                )}
+              </div>
+            </motion.button>
+            {!mediaExpanded && (
+              <span className="text-slate-600 text-[10px] mt-1.5">
+                {t('timer.tap_to_expand')}
+              </span>
+            )}
+          </motion.div>
+        ) : (
+          <button
+            onClick={onShowTutorial}
+            className="flex items-center gap-1.5 text-slate-600 hover:text-slate-400 transition-colors mx-auto"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span className="text-xs underline">{t('timer.show_tutorial')}</span>
+          </button>
+        )}
       </div>
 
       {/* Quit confirmation modal */}
