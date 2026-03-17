@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  start:
+    desc: Start development server
+    cmds:
+      - npm run dev -- --host
+  
+  build:
+    desc: Build the project
+    cmds:
+      - npm run build
+  
+  lint:
+    desc: Run linter
+    cmds:
+      - npm run lint
