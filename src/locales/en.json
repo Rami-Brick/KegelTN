@@ -273,8 +273,33 @@
     "greeting_morning": "Good morning",
     "greeting_afternoon": "Good afternoon",
     "greeting_evening": "Good evening",
-    "streak": "{{count}} day streak",
-    "streak_zero": "Start your streak!",
+    "percentile": {
+      "badge": "Practitioner rank",
+      "label": "You're in the top {{percent}} of practitioners",
+      "zero": "Start today and earn your place near the top."
+    },
+    "streak": {
+      "count": "days",
+      "days": "{{count}} day streak",
+      "startStreak": "Start your streak!",
+      "milestone7": "1 Week streak! 🔥",
+      "milestone14": "2 Weeks strong! 💪",
+      "milestone30": "1 Month legend! 🏆",
+      "milestone60": "2 Months unstoppable! ⚡",
+      "milestone90": "3 Months — Elite! 👑"
+    },
+    "weekdays": {
+      "sat": "Sat",
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri"
+    },
+    "weeklyChart": {
+      "title": "This week"
+    },
     "today_done": "Today's session complete",
     "today_pending": "Today's session awaits",
     "start": "Let's Go",

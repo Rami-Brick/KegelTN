@@ -273,8 +273,33 @@
     "greeting_morning": "صباح الخير",
     "greeting_afternoon": "مساء الخير",
     "greeting_evening": "مساء الخير",
-    "streak": "سلسلة {{count}} يوم",
-    "streak_zero": "!ابدأ سلسلتك",
+    "percentile": {
+      "badge": "ترتيبك",
+      "label": "أنت ضمن أفضل {{percent}} من الممارسين",
+      "zero": "ابدأ اليوم واحجز مكانك قريبًا من القمة."
+    },
+    "streak": {
+      "count": "يوم",
+      "days": "سلسلة {{count}} يوم",
+      "startStreak": "ابدأ سلسلتك!",
+      "milestone7": "أسبوع كامل! 🔥",
+      "milestone14": "أسبوعان من القوة! 💪",
+      "milestone30": "شهر كامل — أسطورة! 🏆",
+      "milestone60": "شهران بلا توقف! ⚡",
+      "milestone90": "3 أشهر — مستوى النخبة! 👑"
+    },
+    "weekdays": {
+      "sat": "سبت",
+      "sun": "أحد",
+      "mon": "اثن",
+      "tue": "ثلا",
+      "wed": "أرب",
+      "thu": "خمي",
+      "fri": "جمع"
+    },
+    "weeklyChart": {
+      "title": "هذا الأسبوع"
+    },
     "today_done": "تمرين اليوم مكتمل",
     "today_pending": "تمرين اليوم ينتظرك",
     "start": "هيا بنا",
