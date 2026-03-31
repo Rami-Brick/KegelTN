@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource-variable/cairo";
 @import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
@@ -129,11 +130,21 @@ body {
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+  }
   html {
     @apply font-sans;
-    }
+  }
+
+  html[lang='ar'] {
+    --font-sans: 'Cairo Variable', sans-serif;
+    font-family: var(--font-sans);
+  }
+
+  html[lang='ar'],
+  html[lang='ar'] * {
+    letter-spacing: 0;
+  }
 }
