@@ -163,6 +163,7 @@ function App() {
   return (
     <HomeScreen
       userId={session.user.id}
+      userProfile={userProfile}
       onStartWorkout={() => setAppState('library')}
       onOpenJourney={() => setAppState('journey')}
     />

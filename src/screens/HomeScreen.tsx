@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
   Circle,
   Flame,
@@ -13,9 +14,18 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { logout } from '../services/auth';
+import {
+  CATEGORIES,
+  computeExerciseStatuses,
+  exerciseToKey,
+  fetchActiveExercises,
+  fetchCompletions,
+} from '../services/exercises';
+import type { ExerciseWithStatus, UserProfile } from '../services/exercises';
 
 interface HomeScreenProps {
   userId: string;
+  userProfile: UserProfile;
   onStartWorkout: () => void;
   onOpenJourney: () => void;
 }
@@ -43,8 +53,13 @@ interface HomeStats {
   percentile: string | null;
 }
 
-const ENGLISH_WEEK_ORDER: WeekdayKey[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-const ARABIC_WEEK_ORDER: WeekdayKey[] = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
+interface CategoryProgress {
+  category: string;
+  exercises: Pick<ExerciseWithStatus, 'id' | 'name' | 'difficulty' | 'isCompleted' | 'isCurrentLevel'>[];
+}
+
+const WEEK_ORDER: WeekdayKey[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const CATEGORY_ORDER = ['rigidity', 'stamina', 'endurance'];
 const MILESTONE_KEYS: Record<number, string> = {
   7: 'home.streak.milestone7',
   14: 'home.streak.milestone14',
@@ -52,6 +67,21 @@ const MILESTONE_KEYS: Record<number, string> = {
   60: 'home.streak.milestone60',
   90: 'home.streak.milestone90',
 };
+
+function getOrderedCategories(goalCategories: string[]): string[] {
+  const goalSet = new Set(goalCategories);
+  return [
+    ...CATEGORY_ORDER.filter((category) => goalSet.has(category)),
+    ...CATEGORY_ORDER.filter((category) => !goalSet.has(category)),
+  ];
+}
+
+function getDefaultExpandedCategories(goalCategories: string[]): string[] {
+  const orderedGoals = CATEGORY_ORDER.filter((category) => goalCategories.includes(category));
+  if (orderedGoals.length === 0) return [CATEGORY_ORDER[0]];
+  if (orderedGoals.length === CATEGORY_ORDER.length) return [orderedGoals[0]];
+  return orderedGoals;
+}
 
 function getGreetingKey(): string {
   const hour = new Date().getHours();
@@ -96,10 +126,10 @@ function calculateStreak(dates: string[]): number {
   return streak;
 }
 
-function getWeekStart(date: Date, isArabic: boolean): Date {
+function getWeekStart(date: Date): Date {
   const start = startOfDay(date);
   const day = start.getDay();
-  const offset = isArabic ? (day + 1) % 7 : (day + 6) % 7;
+  const offset = (day + 6) % 7;
   start.setDate(start.getDate() - offset);
   return start;
 }
@@ -114,15 +144,14 @@ function getPercentile(totalSessions: number): string | null {
   return '1%';
 }
 
-function deriveHomeStats(workouts: WorkoutRecord[], isArabic: boolean): HomeStats {
+function deriveHomeStats(workouts: WorkoutRecord[]): HomeStats {
   const dates = workouts.map((workout) => workout.completed_at);
   const completedDays = new Set(dates.map((d) => startOfDay(new Date(d)).toDateString()));
   const today = startOfDay(new Date());
   const todayKey = today.toDateString();
-  const weekStart = getWeekStart(today, isArabic);
+  const weekStart = getWeekStart(today);
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 7);
-  const weekOrder = isArabic ? ARABIC_WEEK_ORDER : ENGLISH_WEEK_ORDER;
   const weeklyTotals = new Map<string, number>();
 
   workouts.forEach((workout) => {
@@ -133,7 +162,7 @@ function deriveHomeStats(workouts: WorkoutRecord[], isArabic: boolean): HomeStat
     weeklyTotals.set(dateKey, (weeklyTotals.get(dateKey) ?? 0) + (workout.duration_seconds ?? 0));
   });
 
-  const weeklyDays = weekOrder.map((key, index) => {
+  const weeklyDays = WEEK_ORDER.map((key, index) => {
     const date = new Date(weekStart);
     date.setDate(weekStart.getDate() + index);
     const dateKey = startOfDay(date).toDateString();
@@ -165,29 +194,59 @@ function getMilestoneKey(streak: number): string | null {
   return MILESTONE_KEYS[streak] ?? null;
 }
 
-export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: HomeScreenProps) {
+export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpenJourney }: HomeScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
   const [workouts, setWorkouts] = useState<WorkoutRecord[]>([]);
+  const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(() =>
+    getDefaultExpandedCategories(userProfile.goalCategories)
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchStats() {
-      const { data } = await supabase
-        .from('workouts')
-        .select('completed_at, duration_seconds')
-        .eq('user_id', userId)
-        .order('completed_at', { ascending: false });
+    setExpandedCategories(getDefaultExpandedCategories(userProfile.goalCategories));
+  }, [userProfile.goalCategories]);
 
-      setWorkouts((data ?? []) as WorkoutRecord[]);
+  useEffect(() => {
+    async function fetchStats() {
+      const [{ data: workoutRows }, exercises, completions] = await Promise.all([
+        supabase
+          .from('workouts')
+          .select('completed_at, duration_seconds')
+          .eq('user_id', userId)
+          .order('completed_at', { ascending: false }),
+        fetchActiveExercises(),
+        fetchCompletions(userId),
+      ]);
+
+      const statuses = computeExerciseStatuses(exercises, completions);
+      const orderedCategories = getOrderedCategories(userProfile.goalCategories);
+
+      setWorkouts((workoutRows ?? []) as WorkoutRecord[]);
+      setCategoryProgress(
+        orderedCategories.map((category) => ({
+          category,
+          exercises: statuses
+            .filter((exercise) => exercise.category === category)
+            .sort((a, b) => CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category))
+            .map((exercise) => ({
+              id: exercise.id,
+              name: exercise.name,
+              difficulty: exercise.difficulty,
+              isCompleted: exercise.isCompleted,
+              isCurrentLevel: exercise.isCurrentLevel,
+            })),
+        }))
+      );
       setLoading(false);
     }
 
     fetchStats();
-  }, [userId]);
+  }, [userId, userProfile.goalCategories]);
 
-  const stats = deriveHomeStats(workouts, isArabic);
+  const stats = deriveHomeStats(workouts);
   const milestoneKey = getMilestoneKey(stats.currentStreak);
   const maxWeeklySeconds = Math.max(...stats.weeklyDays.map((day) => day.totalSeconds), 1);
   const streakLabel = loading
@@ -220,6 +279,13 @@ export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: Ho
     stats.currentStreak >= 4
       ? { duration: stats.currentStreak >= 8 ? 2 : 2.6, repeat: Infinity, ease: 'easeInOut' as const }
       : undefined;
+  const toggleCategory = (category: string) => {
+    setExpandedCategories((current) =>
+      current.includes(category)
+        ? current.filter((item) => item !== category)
+        : [...current, category]
+    );
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -248,7 +314,7 @@ export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: Ho
       </button>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-sm py-16">
+      <div className="flex-1 flex flex-col items-center justify-start w-full max-w-sm py-16">
         {/* Greeting */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -419,6 +485,139 @@ export default function HomeScreen({ userId, onStartWorkout, onOpenJourney }: Ho
                     {t(`home.weekdays.${day.key}`)}
                   </span>
                 </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Compact progression */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.32 }}
+          className="w-full rounded-2xl bg-white/[0.03] border border-white/[0.06] px-3.5 py-3 mb-6"
+        >
+          <p className="text-slate-500 text-[10px] uppercase tracking-[0.16em] mb-3">
+            {t('journey.progression_title')}
+          </p>
+
+          <div className="space-y-2">
+            {categoryProgress.map((category, index) => {
+              const categoryStyle = CATEGORIES[category.category];
+              const completedCount = category.exercises.filter((exercise) => exercise.isCompleted).length;
+              const nextExercise = category.exercises.find((exercise) => exercise.isCurrentLevel);
+              const isExpanded = expandedCategories.includes(category.category);
+              const isGoalCategory = userProfile.goalCategories.includes(category.category);
+
+              return (
+                <motion.div
+                  key={category.category}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.36 + index * 0.04 }}
+                  className="rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden"
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(category.category)}
+                    className="w-full px-3 py-2.5 flex items-center gap-3 text-start"
+                  >
+                    <div
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ backgroundColor: categoryStyle.color }}
+                    />
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[13px] text-white font-medium truncate">
+                          {t(`library.category_${category.category}`)}
+                        </span>
+                        {isGoalCategory && (
+                          <span className="px-1.5 py-0.5 rounded-full bg-[#4F8EF7]/12 text-[#7CC8FF] text-[9px] uppercase tracking-[0.08em]">
+                            {t('library.recommended_badge')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-1 min-w-0">
+                        <span className="text-[10px] text-slate-500 shrink-0">
+                          {t('journey.progression_completed', { count: completedCount })}
+                        </span>
+                        {nextExercise && (
+                          <span className="text-[10px] text-slate-600 truncate">
+                            {t('library.up_next')}: {t(`exercises.${exerciseToKey(nextExercise.name)}.name`, { defaultValue: nextExercise.name })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <motion.span
+                      animate={{ rotate: isExpanded ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-slate-500 shrink-0"
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </motion.span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.22, ease: 'easeOut' }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-3 pb-3">
+                          <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mb-2.5">
+                            <motion.div
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: categoryStyle.color }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(completedCount / Math.max(category.exercises.length, 1)) * 100}%` }}
+                              transition={{ duration: 0.35, delay: 0.05 }}
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            {category.exercises.map((exercise) => {
+                              const exerciseName = t(`exercises.${exerciseToKey(exercise.name)}.name`, {
+                                defaultValue: exercise.name,
+                              });
+
+                              return (
+                                <div
+                                  key={exercise.id}
+                                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 bg-white/[0.02]"
+                                >
+                                  {exercise.isCompleted ? (
+                                    <CheckCircle2
+                                      className="w-3.5 h-3.5 shrink-0"
+                                      style={{ color: categoryStyle.color }}
+                                    />
+                                  ) : (
+                                    <Circle className="w-3.5 h-3.5 text-slate-700 shrink-0" />
+                                  )}
+
+                                  <span className={`text-[11px] truncate ${exercise.isCompleted ? 'text-slate-300' : 'text-slate-500'}`}>
+                                    {exerciseName}
+                                  </span>
+
+                                  {exercise.isCurrentLevel && !exercise.isCompleted && (
+                                    <span className="ms-auto px-1.5 py-0.5 rounded-full bg-white/[0.04] text-[9px] text-[#7CC8FF] shrink-0">
+                                      {t('library.up_next')}
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
           </div>

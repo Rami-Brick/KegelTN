@@ -24,8 +24,8 @@
 
 do $$
 declare
-  target_email text := 'demo-elite@kegeltn.app';
-  target_profile text := 'elite_user';
+  target_email text := 'rami@kegeltn.app';
+  target_profile text := 'new_user';
   clear_existing_data boolean := true;
 
   v_user_id uuid;
