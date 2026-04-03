@@ -5,6 +5,7 @@ import {
   Check, ChevronLeft, Target, BarChart3, Calendar,
   Sparkles, Dumbbell, Clock, Heart, Globe,
 } from 'lucide-react';
+import { BRAND_RUBY } from '../constants/brand';
 
 type QuizAnswers = Record<number, number>;
 
@@ -45,7 +46,7 @@ function deriveProgram(answers: QuizAnswers): string {
   return difficulty;
 }
 
-const ICON_COLORS = ['#4F8EF7', '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
+const ICON_COLORS = [BRAND_RUBY.primary, '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
 
 export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenProps) {
   const { t, i18n } = useTranslation();
@@ -102,9 +103,10 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-            className="w-20 h-20 rounded-full bg-[#4F8EF7]/10 flex items-center justify-center mb-6"
+            className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+            style={{ backgroundColor: BRAND_RUBY.tint10 }}
           >
-            <Sparkles className="w-10 h-10 text-[#4F8EF7]" />
+            <Sparkles className="w-10 h-10" style={{ color: BRAND_RUBY.primary }} />
           </motion.div>
 
           <motion.h1
@@ -131,7 +133,7 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             transition={{ delay: 0.4 }}
             className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6 mb-6"
           >
-            <p className="text-center text-[#4F8EF7] text-sm font-medium mb-1">
+            <p className="text-center text-sm font-medium mb-1" style={{ color: BRAND_RUBY.primary }}>
               {t('quiz.results.subtitle')}
             </p>
             <p className="text-center text-white text-2xl font-bold">
@@ -171,7 +173,8 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={() => onComplete(answers, program)}
-              className="w-full py-3.5 rounded-xl bg-[#4F8EF7] text-white font-semibold text-base"
+              className="w-full py-3.5 rounded-xl text-white font-semibold text-base"
+              style={{ backgroundColor: BRAND_RUBY.primary }}
             >
               {t('quiz.results.start')}
             </motion.button>
@@ -214,7 +217,8 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
         {/* Progress bar */}
         <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-[#4F8EF7] rounded-full"
+            className="h-full rounded-full"
+            style={{ backgroundColor: BRAND_RUBY.primary }}
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
@@ -270,16 +274,24 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
                     whileTap={{ scale: 0.98 }}
                     className={`w-full flex items-center gap-3 px-4 py-4 rounded-xl border text-start transition-all duration-200 ${
                       isSelected
-                        ? 'bg-[#4F8EF7]/10 border-[#4F8EF7] text-white'
+                        ? 'text-white'
                         : 'bg-white/[0.03] border-white/10 text-slate-300 hover:bg-white/[0.06]'
                     }`}
+                    style={isSelected ? {
+                      backgroundColor: BRAND_RUBY.tint10,
+                      borderColor: BRAND_RUBY.primary,
+                    } : undefined}
                   >
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
                         isSelected
-                          ? 'border-[#4F8EF7] bg-[#4F8EF7]'
+                          ? ''
                           : 'border-white/20'
                       }`}
+                      style={isSelected ? {
+                        borderColor: BRAND_RUBY.primary,
+                        backgroundColor: BRAND_RUBY.primary,
+                      } : undefined}
                     >
                       {isSelected && <Check className="w-3 h-3 text-white" />}
                     </div>
@@ -300,7 +312,8 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
           onClick={next}
           disabled={selectedOption === undefined}
           whileTap={{ scale: 0.97 }}
-          className="w-full py-3.5 rounded-xl bg-[#4F8EF7] text-white font-semibold text-base disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+          className="w-full py-3.5 rounded-xl text-white font-semibold text-base disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+          style={{ backgroundColor: BRAND_RUBY.primary }}
         >
           {t('quiz.next')}
         </motion.button>

@@ -77,7 +77,7 @@ export default function LoginScreen() {
             }}
             onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
             placeholder={t('login.placeholder')}
-            className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 text-center text-base outline-none focus:border-[#4F8EF7] focus:ring-1 focus:ring-[#4F8EF7] transition-all"
+            className="w-full px-4 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 text-center text-base outline-none focus:border-[#D44F63] focus:ring-1 focus:ring-[#D44F63] transition-all"
             dir="ltr"
           />
         </div>
@@ -98,7 +98,7 @@ export default function LoginScreen() {
           onClick={handleLogin}
           disabled={loading || !accessKey.trim()}
           whileTap={{ scale: 0.97 }}
-          className="w-full py-3.5 rounded-xl bg-[#4F8EF7] text-white font-semibold text-base disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+          className="w-full py-3.5 rounded-xl bg-[#D44F63] text-white font-semibold text-base disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
         >
           {loading ? (
             <span className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
