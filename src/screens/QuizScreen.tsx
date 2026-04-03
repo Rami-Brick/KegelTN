@@ -51,6 +51,8 @@ const ICON_COLORS = [BRAND_RUBY.primary, '#EF4444', '#F97316', '#34D399', '#8B5C
 export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+  const nextLanguage = isArabic ? 'fr' : 'ar';
+  const nextLanguageLabel = isArabic ? 'FR' : '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers ?? {});
@@ -134,7 +136,6 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6 mb-6"
           >
             <p className="text-center text-sm font-medium mb-1" style={{ color: BRAND_RUBY.primary }}>
-              {t('quiz.results.subtitle')}
             </p>
             <p className="text-center text-white text-2xl font-bold">
               {t('quiz.results.program', {
@@ -206,11 +207,11 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             {t('quiz.progress', { current: step + 1, total })}
           </span>
           <button
-            onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+            onClick={() => i18n.changeLanguage(nextLanguage)}
             className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
           >
             <Globe className="w-4 h-4" />
-            <span>{isArabic ? 'EN' : 'عربي'}</span>
+            <span>{nextLanguageLabel}</span>
           </button>
         </div>
 

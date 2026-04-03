@@ -56,6 +56,7 @@ function calculateStreak(dates: string[]): number {
 function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+  const isFrench = i18n.language === 'fr';
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -65,7 +66,9 @@ function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
 
   const dayLabels = isArabic
     ? ['أح', 'إث', 'ثل', 'أر', 'خم', 'جم', 'سب']
-    : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    : isFrench
+      ? ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']
+      : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   const cells: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);

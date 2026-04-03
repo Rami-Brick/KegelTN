@@ -198,6 +198,8 @@ function getMilestoneKey(streak: number): string | null {
 export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpenJourney }: HomeScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+  const nextLanguage = isArabic ? 'fr' : 'ar';
+  const nextLanguageLabel = isArabic ? 'FR' : '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
 
   const [workouts, setWorkouts] = useState<WorkoutRecord[]>([]);
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
@@ -307,11 +309,11 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
 
       {/* Language toggle */}
       <button
-        onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+        onClick={() => i18n.changeLanguage(nextLanguage)}
         className="absolute top-6 left-6 text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-2"
       >
         <Globe className="w-4 h-4" />
-        <span>{isArabic ? 'EN' : 'عربي'}</span>
+        <span>{nextLanguageLabel}</span>
       </button>
 
       {/* Content */}

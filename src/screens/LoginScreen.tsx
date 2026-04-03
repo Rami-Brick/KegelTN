@@ -11,9 +11,11 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const isArabic = i18n.language === 'ar';
+  const nextLanguage = isArabic ? 'fr' : 'ar';
+  const nextLanguageLabel = isArabic ? 'FR' : '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
 
   const toggleLanguage = () => {
-    i18n.changeLanguage(isArabic ? 'en' : 'ar');
+    i18n.changeLanguage(nextLanguage);
   };
 
   const handleLogin = async () => {
@@ -41,7 +43,7 @@ export default function LoginScreen() {
         onClick={toggleLanguage}
         className="absolute top-6 right-6 text-sm text-slate-400 hover:text-white transition-colors"
       >
-        {isArabic ? 'EN' : 'عربي'}
+        {nextLanguageLabel}
       </button>
 
       <motion.div

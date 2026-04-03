@@ -1,0 +1,372 @@
+{
+  "login": {
+    "tagline": "Entraînez-vous plus intelligemment. Performez mieux.",
+    "placeholder": "Entrez votre clé d'accès",
+    "button": "Commencer l'entraînement",
+    "error": "Clé d'accès invalide. Veuillez réessayer."
+  },
+  "journey": {
+    "title": "Mon parcours",
+    "profile": "Profil",
+    "name": "Nom",
+    "age": "Âge",
+    "weight": "Poids",
+    "not_set": "Pas encore défini",
+    "focus_title": "Votre objectif",
+    "focus_rigidity": "Des érections plus fortes et plus dures",
+    "focus_stamina": "Mieux contrôler pour durer plus longtemps",
+    "focus_endurance": "Construire une endurance durable",
+    "focus_all": "Amélioration complète des performances sexuelles",
+    "level": "Votre niveau",
+    "motivation_beginner": "Vous construisez une base solide - chaque séance compte.",
+    "motivation_intermediate": "Vous progressez vraiment - continuez sur cette lancée.",
+    "motivation_advanced": "Vous êtes à un niveau d'élite - la régularité est votre super-pouvoir.",
+    "stats_title": "Statistiques",
+    "total_workouts": "Séances totales",
+    "current_streak": "Série de jours",
+    "total_time": "Minutes totales",
+    "activity_title": "Activité",
+    "progression_title": "Progression",
+    "progression_completed": "{{count}} sur 3 terminés",
+    "retake_quiz": "Refaire le quiz",
+    "reset_progress": "Réinitialiser la progression",
+    "reset_confirm": "Voulez-vous vraiment réinitialiser toute la progression des exercices ?",
+    "reset_yes": "Oui, réinitialiser",
+    "reset_no": "Annuler",
+    "home_card": "Mon parcours",
+    "home_card_sub": "Voir votre progression et vos stats"
+  },
+  "exercises": {
+    "pelvic_tilt": {
+      "name": "Bascule du bassin",
+      "description": "Repérez les bons muscles et apprenez à basculer le bassin pour favoriser l'afflux sanguin. Allongez-vous sur le dos, genoux pliés, basculez doucement le bassin vers le haut puis relâchez.",
+      "phase1": "Bascule",
+      "phase2": "Relâche"
+    },
+    "marching_feet_bridge": {
+      "name": "Pont alterné",
+      "description": "Allongez-vous sur le dos en position de pont. Alternez en décollant chaque pied du sol tout en gardant les hanches hautes. Renforce la stabilité pelvienne.",
+      "phase1": "Lève",
+      "phase2": "Pose"
+    },
+    "bent_leg_kickback": {
+      "name": "Kickback jambe pliée",
+      "description": "À quatre pattes, poussez une jambe pliée vers l'arrière et vers le haut en serrant le fessier en haut du mouvement. Alternez les jambes. Active la connexion fessiers-bassin.",
+      "phase1": "Pousse",
+      "phase2": "Retour"
+    },
+    "heel_glute_bridge": {
+      "name": "Pont fessier sur les talons",
+      "description": "Renforce la connexion entre les fessiers et le plancher pelvien. Poussez sur les talons pour lever les hanches, serrez en haut, puis redescendez avec contrôle.",
+      "phase1": "Monte",
+      "phase2": "Descends"
+    },
+    "hip_abduction": {
+      "name": "Abduction de hanche",
+      "description": "Allongez-vous sur le côté et levez la jambe du dessus en gardant les hanches bien superposées. Renforce la hanche externe et les stabilisateurs du bassin.",
+      "phase1": "Ouvre",
+      "phase2": "Ferme"
+    },
+    "bridge_abduction": {
+      "name": "Abduction en pont",
+      "description": "En position de pont fessier, écartez les genoux contre une bande de résistance. Combine la force du pont et l'abduction pour plus de puissance pelvienne.",
+      "phase1": "Ouvre",
+      "phase2": "Ferme"
+    },
+    "rear_decline_bridge": {
+      "name": "Pont incliné arrière",
+      "description": "Pression maximale pour retenir le sang dans le pénis. Pieds surélevés sur un support, poussez les hanches vers le haut avec un engagement complet des fessiers. La variation de pont la plus intense.",
+      "phase1": "Monte",
+      "phase2": "Descends"
+    },
+    "frog_reverse_hyperextension": {
+      "name": "Hyperextension inversée grenouille",
+      "description": "Allongez-vous à plat ventre sur un banc, jambes en position grenouille. Levez les jambes en serrant les fessiers. Cible intensément les muscles profonds du plancher pelvien.",
+      "phase1": "Monte",
+      "phase2": "Descends"
+    },
+    "sidekick_with_bent_knee": {
+      "name": "Side kick genou plié",
+      "description": "À quatre pattes, envoyez une jambe pliée sur le côté à la hauteur de la hanche. Développe la stabilité latérale du bassin sous charge.",
+      "phase1": "Pousse",
+      "phase2": "Retour"
+    },
+    "child_pose": {
+      "name": "Posture de l'enfant",
+      "description": "La meilleure remise à zéro pour abaisser et détendre le plancher pelvien. Mettez-vous à genoux, asseyez-vous sur les talons, tendez les bras vers l'avant et respirez profondément dans le ventre.",
+      "phase1": "Tiens",
+      "phase2": "Respire"
+    },
+    "cat_cow_stretch": {
+      "name": "Étirement chat-vache",
+      "description": "À quatre pattes, alternez entre creuser le dos et l'arrondir. Relâche les tensions du plancher pelvien et améliore la conscience corporelle.",
+      "phase1": "Creuse",
+      "phase2": "Arrondis"
+    },
+    "prone_stretch": {
+      "name": "Étirement ventral",
+      "description": "Allongez-vous sur le ventre puis poussez doucement sur les mains pour étirer l'avant du corps. Ouvre les fléchisseurs de hanche et relâche les tensions pelviennes.",
+      "phase1": "Étire",
+      "phase2": "Relâche"
+    },
+    "lying_butterfly": {
+      "name": "Papillon allongé",
+      "description": "Étire les adducteurs pour éviter les pics de tension. Allongez-vous sur le dos, plante des pieds ensemble, laissez les genoux s'ouvrir. Respirez et relâchez.",
+      "phase1": "Ouvre",
+      "phase2": "Ferme"
+    },
+    "rocking_frog_stretch": {
+      "name": "Étirement grenouille balancé",
+      "description": "En position à genoux écartés, balancez-vous doucement vers l'avant et vers l'arrière. Étire profondément l'intérieur des cuisses et le plancher pelvien pour un meilleur contrôle du relâchement.",
+      "phase1": "Bascule",
+      "phase2": "Retour"
+    },
+    "cat_cow_advanced": {
+      "name": "Chat-vache avancé",
+      "description": "Version plus profonde du chat-vache avec engagement volontaire du plancher pelvien. Concentrez-vous sur un relâchement complet en vache et un léger engagement en chat.",
+      "phase1": "Creuse",
+      "phase2": "Arrondis"
+    },
+    "90_to_90_advanced": {
+      "name": "90-90 avancé",
+      "description": "Ouverture extrême des hanches pour une endurance maximale. Asseyez-vous en position 90-90, faites pivoter le torse au-dessus de la jambe avant puis revenez au centre.",
+      "phase1": "Pivote",
+      "phase2": "Retour"
+    },
+    "figure_4_spinal_rotation": {
+      "name": "Rotation vertébrale figure 4",
+      "description": "Allongez-vous sur le dos, croisez une cheville sur le genou opposé, puis laissez les jambes empilées basculer d'un côté. Relâche profondément le plancher pelvien et les hanches.",
+      "phase1": "Pivote",
+      "phase2": "Retour"
+    },
+    "90_to_90_transitions": {
+      "name": "Transitions 90-90",
+      "description": "Assis en 90-90, faites passer les jambes en douceur vers la position 90-90 opposée. Développe une mobilité fluide des hanches essentielle pour le contrôle de l'endurance.",
+      "phase1": "Change",
+      "phase2": "Tiens"
+    },
+    "kneeling_ab_draw_in": {
+      "name": "Gainage abdominal à genoux",
+      "description": "Synchronisez la respiration et le tronc profond avec votre plancher pelvien. À quatre pattes, expirez et rentrez le nombril vers la colonne en engageant le plancher pelvien.",
+      "phase1": "Rentre",
+      "phase2": "Relâche"
+    },
+    "pelvic_tilt_breathing": {
+      "name": "Respiration avec bascule du bassin",
+      "description": "Allongez-vous sur le dos et basculez doucement le bassin en expirant. Coordonnez la respiration avec le mouvement pour renforcer la connexion tronc-plancher pelvien.",
+      "phase1": "Bascule",
+      "phase2": "Relâche"
+    },
+    "marching_bridge_hold": {
+      "name": "Pont alterné maintenu",
+      "description": "En position de pont, levez alternativement chaque genou vers la poitrine en gardant les hanches stables. Développe l'endurance des stabilisateurs pelviens.",
+      "phase1": "Marche",
+      "phase2": "Tiens"
+    },
+    "glute_march": {
+      "name": "Marche fessière en pont",
+      "description": "Maintenez la force pelvienne pendant que les jambes bougent. En position de pont, marchez avec contrôle tout en gardant une forte élévation des hanches.",
+      "phase1": "Marche",
+      "phase2": "Change"
+    },
+    "rocking_frog_hold": {
+      "name": "Grenouille balancée avec maintien",
+      "description": "Position grenouille à genoux écartés avec maintien au point le plus profond. Développe à la fois la tolérance à l'étirement et l'endurance du plancher pelvien sous tension.",
+      "phase1": "Bascule",
+      "phase2": "Tiens"
+    },
+    "abduction_march": {
+      "name": "Marche avec abduction",
+      "description": "En position de pont, alternez entre l'ouverture des genoux et la marche. Combine plusieurs sollicitations du plancher pelvien pour une endurance fonctionnelle.",
+      "phase1": "Ouvre",
+      "phase2": "Ferme"
+    },
+    "squat_side_bends": {
+      "name": "Flexions latérales en squat",
+      "description": "Maintenez la stabilité du plancher pelvien sous une charge importante. En position de squat, effectuez des flexions latérales en gardant le plancher pelvien engagé tout au long du mouvement.",
+      "phase1": "Penche",
+      "phase2": "Retour"
+    },
+    "90_to_90_endurance": {
+      "name": "90-90 endurance",
+      "description": "En position 90-90, pivotez et tenez en fin d'amplitude. Met le plancher pelvien au défi de rester stable pendant des positions prolongées sous charge.",
+      "phase1": "Pivote",
+      "phase2": "Tiens"
+    },
+    "sidekick_endurance": {
+      "name": "Side kick endurance",
+      "description": "À quatre pattes, tendez la jambe sur le côté et maintenez en haut. Une sollicitation latérale prolongée du bassin développe une endurance durable.",
+      "phase1": "Pousse",
+      "phase2": "Tiens"
+    }
+  },
+  "difficulty": {
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé"
+  },
+  "library": {
+    "title": "Exercices",
+    "recommended_badge": "Recommandé",
+    "featured_badge": "Le mieux pour vous",
+    "category_rigidity": "Rigidité et puissance",
+    "category_stamina": "Stamina et contrôle",
+    "category_endurance": "Endurance active",
+    "category_rigidity_sub": "Dureté de l'érection",
+    "category_stamina_sub": "Prévenir l'éjaculation précoce",
+    "category_endurance_sub": "Durer plus longtemps",
+    "difficulty_beginner": "Débutant",
+    "difficulty_intermediate": "Intermédiaire",
+    "difficulty_advanced": "Avancé",
+    "sets_info": "{{sets}} séries · {{reps}} répétitions",
+    "up_next": "À suivre",
+    "back": "Retour"
+  },
+  "exercise_intro": {
+    "title": "Voici comment le faire",
+    "instruction": "Contractez les muscles du périnée - les mêmes que vous utiliseriez pour arrêter d'uriner en plein jet. Maintenez bien pendant CONTRACTE, puis relâchez complètement pendant RELÂCHE.",
+    "start": "Je suis prêt",
+    "skip": "Passer",
+    "video_coming": "Vidéo bientôt disponible"
+  },
+  "timer": {
+    "contract": "Contracte",
+    "relax": "Relâche",
+    "rep": "Répétition {{current}} sur {{total}}",
+    "tap_to_start": "Touchez pour commencer",
+    "ready": "Prêt ?",
+    "pause": "Touchez pour reprendre",
+    "paused": "En pause",
+    "quit": "Quitter",
+    "show_tutorial": "Comment faire ?",
+    "tap_to_expand": "Touchez pour agrandir",
+    "quit_confirm": "Voulez-vous vraiment quitter ?",
+    "quit_yes": "Oui, quitter",
+    "quit_no": "Continuer",
+    "rest": "Repos",
+    "set": "Série {{current}} sur {{total}}",
+    "complete_title": "Séance terminée !",
+    "complete_subtitle": "Très bon travail. La régularité est la clé.",
+    "complete_duration": "Durée",
+    "complete_reps": "Répétitions totales",
+    "complete_sets": "Séries",
+    "complete_done": "Retour à l'accueil"
+  },
+  "workout": {
+    "title": "Choisissez votre séance",
+    "recommended": "Recommandé pour vous",
+    "beginner": "Débutant",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé",
+    "beginner_desc": "Parfait pour commencer. Construisez vos bases.",
+    "intermediate_desc": "Passez au niveau supérieur. Augmentez le temps de maintien et les répétitions.",
+    "advanced_desc": "Intensité maximale. Pour les pratiquants expérimentés.",
+    "contract": "{{sec}} s de contraction",
+    "relax": "{{sec}} s de relâchement",
+    "reps": "{{count}} répétitions",
+    "duration": "~{{min}} min",
+    "start": "Commencer la séance",
+    "locked": "Terminez d'abord {{prev}}",
+    "back": "Retour"
+  },
+  "home": {
+    "greeting_morning": "Bonjour",
+    "greeting_afternoon": "Bon après-midi",
+    "greeting_evening": "Bonsoir",
+    "percentile": {
+      "badge": "Classement des pratiquants",
+      "label": "Vous faites partie du top {{percent}} des pratiquants",
+      "zero": "Commencez aujourd'hui et gagnez votre place parmi les meilleurs."
+    },
+    "streak": {
+      "count": "jours",
+      "days": "Série de {{count}} jours",
+      "startStreak": "Commencez votre série !",
+      "milestone7": "1 semaine d'affilée ! 🔥",
+      "milestone14": "2 semaines en force ! 💪",
+      "milestone30": "1 mois de légende ! 🏆",
+      "milestone60": "2 mois sans arrêt ! ⚡",
+      "milestone90": "3 mois - niveau élite ! 👑"
+    },
+    "weekdays": {
+      "sat": "Sam",
+      "sun": "Dim",
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven"
+    },
+    "weeklyChart": {
+      "title": "Cette semaine"
+    },
+    "today_done": "La séance d'aujourd'hui est terminée",
+    "today_pending": "La séance d'aujourd'hui vous attend",
+    "start": "C'est parti",
+    "howto": "Comment faire les exercices de Kegel"
+  },
+  "quiz": {
+    "progress": "{{current}} sur {{total}}",
+    "next": "Continuer",
+    "back": "Retour",
+    "q1": {
+      "title": "Quel âge avez-vous ?",
+      "subtitle": "Cela nous aide à personnaliser votre programme",
+      "o1": "18 - 25",
+      "o2": "26 - 35",
+      "o3": "36 - 45",
+      "o4": "46+"
+    },
+    "q2": {
+      "title": "Quel est votre objectif principal ?",
+      "subtitle": "Nous concentrerons votre entraînement là-dessus",
+      "o1": "Des érections plus dures et plus fortes",
+      "o2": "Durer plus longtemps au lit",
+      "o3": "Les deux - amélioration complète"
+    },
+    "q3": {
+      "title": "Comment décririez-vous votre niveau actuel ?",
+      "subtitle": "Soyez honnête - cela détermine votre point de départ",
+      "o1": "J'ai de grosses difficultés",
+      "o2": "En dessous de la moyenne - j'ai une marge d'amélioration",
+      "o3": "Moyen - je veux faire mieux",
+      "o4": "Bon - je cherche un avantage supplémentaire"
+    },
+    "q4": {
+      "title": "Avez-vous déjà fait des exercices du plancher pelvien ?",
+      "subtitle": "Tout exercice de Kegel ou similaire compte",
+      "o1": "Je n'en ai jamais entendu parler",
+      "o2": "J'en ai entendu parler mais je n'ai jamais essayé",
+      "o3": "J'ai essayé quelques fois",
+      "o4": "J'en pratique régulièrement"
+    },
+    "q5": {
+      "title": "À quelle fréquence pouvez-vous vous entraîner ?",
+      "subtitle": "La régularité compte plus que l'intensité",
+      "o1": "Tous les jours",
+      "o2": "4 à 5 fois par semaine",
+      "o3": "2 à 3 fois par semaine",
+      "o4": "Quand j'y pense"
+    },
+    "q6": {
+      "title": "Qu'est-ce qui vous motive le plus ?",
+      "subtitle": "Cela nous aide à vous garder sur la bonne voie",
+      "o1": "Plus de confiance au lit",
+      "o2": "De meilleures performances",
+      "o3": "La satisfaction du partenaire",
+      "o4": "La santé et le bien-être général"
+    },
+    "results": {
+      "title": "Votre programme personnalisé est prêt",
+      "subtitle": "D'après vos réponses, nous recommandons :",
+      "program": "Programme {{program}}",
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé",
+      "insight1": "Cible vos objectifs précis",
+      "insight2": "Correspond à votre niveau actuel",
+      "insight3": "S'adapte à votre emploi du temps",
+      "start": "Commencer mon programme"
+    }
+  }
+}
