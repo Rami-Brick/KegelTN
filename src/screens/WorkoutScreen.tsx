@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Timer, RotateCcw, Repeat, Clock, Play } from 'lucide-react';
+import { BRAND_RUBY } from '../constants/brand';
 
 interface WorkoutScreenProps {
   recommendedProgram: string;
@@ -21,9 +22,9 @@ const PROGRAMS = [
   },
   {
     id: 'intermediate',
-    color: '#4F8EF7',
-    colorBg: 'rgba(79, 142, 247, 0.08)',
-    colorBorder: 'rgba(79, 142, 247, 0.2)',
+    color: BRAND_RUBY.primary,
+    colorBg: BRAND_RUBY.tint08,
+    colorBorder: BRAND_RUBY.border20,
     contractSec: 5,
     relaxSec: 5,
     reps: 10,

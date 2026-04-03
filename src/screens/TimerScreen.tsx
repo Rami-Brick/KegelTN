@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, Clock, Repeat, HelpCircle, Layers, Maximize2, Minimize2 } from 'lucide-react';
 import { exerciseToKey } from '../services/exercises';
 import { getExerciseMedia } from '../config/media';
+import { BRAND_RUBY } from '../constants/brand';
 
 type Phase = 'phase1' | 'phase2' | 'rest';
 type TimerState = 'idle' | 'running' | 'paused' | 'completed';
@@ -34,11 +35,10 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 const PHASE1_COLOR = '#EF4444';
 const PHASE2_COLOR = '#34D399';
-const REST_COLOR = '#4F8EF7';
+const REST_COLOR = BRAND_RUBY.primary;
 
 export default function TimerScreen({ program, onQuit, onComplete, onShowTutorial }: TimerScreenProps) {
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === 'ar';
+  const { t } = useTranslation();
 
   const [phase, setPhase] = useState<Phase>('phase1');
   const [timeLeft, setTimeLeft] = useState(program.contractSec);
@@ -201,21 +201,21 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
           className="flex gap-4 mb-10"
         >
           <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
-            <Clock className="w-5 h-5 text-[#4F8EF7]" />
+            <Clock className="w-5 h-5" style={{ color: BRAND_RUBY.primary }} />
             <span className="text-white font-bold text-lg">
               {mins}:{secs.toString().padStart(2, '0')}
             </span>
             <span className="text-slate-500 text-xs">{t('timer.complete_duration')}</span>
           </div>
           <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
-            <Repeat className="w-5 h-5 text-[#4F8EF7]" />
+            <Repeat className="w-5 h-5" style={{ color: BRAND_RUBY.primary }} />
             <span className="text-white font-bold text-lg">
               {program.reps * program.sets}
             </span>
             <span className="text-slate-500 text-xs">{t('timer.complete_reps')}</span>
           </div>
           <div className="flex flex-col items-center gap-2 bg-white/5 rounded-2xl px-5 py-4">
-            <Layers className="w-5 h-5 text-[#4F8EF7]" />
+            <Layers className="w-5 h-5" style={{ color: BRAND_RUBY.primary }} />
             <span className="text-white font-bold text-lg">{program.sets}</span>
             <span className="text-slate-500 text-xs">{t('timer.complete_sets')}</span>
           </div>
@@ -227,7 +227,8 @@ export default function TimerScreen({ program, onQuit, onComplete, onShowTutoria
           transition={{ delay: 0.5 }}
           whileTap={{ scale: 0.97 }}
           onClick={onQuit}
-          className="w-full max-w-sm py-3.5 rounded-xl bg-[#4F8EF7] text-white font-semibold text-base"
+          className="w-full max-w-sm py-3.5 rounded-xl text-white font-semibold text-base"
+          style={{ backgroundColor: BRAND_RUBY.primary }}
         >
           {t('timer.complete_done')}
         </motion.button>

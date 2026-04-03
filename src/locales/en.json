@@ -359,6 +359,7 @@
     "results": {
       "title": "Your personalized plan is ready",
       "subtitle": "Based on your answers, we recommend:",
+      "program_prefix": "Program",
       "program": "{{program}} Program",
       "beginner": "Beginner",
       "intermediate": "Intermediate",

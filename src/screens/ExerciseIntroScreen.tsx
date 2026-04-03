@@ -4,6 +4,7 @@ import { Dumbbell, Play, ChevronLeft } from 'lucide-react';
 import { getExerciseMedia } from '../config/media';
 import { exerciseToKey } from '../services/exercises';
 import type { Exercise } from '../services/exercises';
+import { BRAND_RUBY } from '../constants/brand';
 
 interface ExerciseIntroScreenProps {
   exercise: Exercise;
@@ -16,8 +17,7 @@ export default function ExerciseIntroScreen({
   onStart,
   onBack,
 }: ExerciseIntroScreenProps) {
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === 'ar';
+  const { t } = useTranslation();
   const media = getExerciseMedia(exercise.name);
   const key = exerciseToKey(exercise.name);
 
@@ -73,7 +73,10 @@ export default function ExerciseIntroScreen({
             // Animated placeholder
             <>
               <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#4F8EF7]/5 to-transparent"
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(135deg, ${BRAND_RUBY.tint05}, transparent)`,
+                }}
                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               />
@@ -81,9 +84,10 @@ export default function ExerciseIntroScreen({
                 <motion.div
                   animate={{ y: [0, -6, 0] }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-16 h-16 rounded-full bg-[#4F8EF7]/10 flex items-center justify-center"
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: BRAND_RUBY.tint10 }}
                 >
-                  <Dumbbell className="w-8 h-8 text-[#4F8EF7]" />
+                  <Dumbbell className="w-8 h-8" style={{ color: BRAND_RUBY.primary }} />
                 </motion.div>
                 <div className="flex items-center gap-1.5 text-slate-500 text-xs">
                   <Play className="w-3 h-3" />
@@ -150,7 +154,8 @@ export default function ExerciseIntroScreen({
           transition={{ delay: 0.4 }}
           whileTap={{ scale: 0.97 }}
           onClick={onStart}
-          className="w-full py-3.5 rounded-xl bg-[#4F8EF7] text-white font-semibold text-base"
+          className="w-full py-3.5 rounded-xl text-white font-semibold text-base"
+          style={{ backgroundColor: BRAND_RUBY.primary }}
         >
           {t('exercise_intro.start')}
         </motion.button>

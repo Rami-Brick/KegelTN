@@ -26,8 +26,7 @@ export default function ExerciseLibraryScreen({
   onBack,
   onSelectExercise,
 }: ExerciseLibraryScreenProps) {
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === 'ar';
+  const { t } = useTranslation();
 
   const [exercises, setExercises] = useState<ExerciseWithStatus[]>([]);
   const [loading, setLoading] = useState(true);

@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ChevronLeft, ChevronRight, LogOut, User, Target, TrendingUp,
+  ChevronLeft, LogOut, User, Target, TrendingUp,
   Flame, Dumbbell, Clock, CheckCircle2, Circle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { logout } from '../services/auth';
-import { fetchActiveExercises, fetchCompletions, computeExerciseStatuses, exerciseToKey, CATEGORIES, resetProgression, deleteQuizResults } from '../services/exercises';
+import { fetchActiveExercises, fetchCompletions, computeExerciseStatuses, exerciseToKey, CATEGORIES, resetProgression } from '../services/exercises';
 import type { UserProfile, Exercise } from '../services/exercises';
+import { BRAND_RUBY } from '../constants/brand';
 
 interface JourneyScreenProps {
   userId: string;
@@ -55,6 +56,7 @@ function calculateStreak(dates: string[]): number {
 function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+  const isFrench = i18n.language === 'fr';
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -64,7 +66,9 @@ function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
 
   const dayLabels = isArabic
     ? ['أح', 'إث', 'ثل', 'أر', 'خم', 'جم', 'سب']
-    : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    : isFrench
+      ? ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']
+      : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   const cells: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
@@ -89,11 +93,12 @@ function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
               key={i}
               className={`w-full aspect-square rounded-lg flex items-center justify-center text-[11px] font-medium transition-all ${
                 isActive
-                  ? 'bg-[#4F8EF7] text-white'
+                  ? 'text-white'
                   : isToday
                     ? 'bg-white/10 text-white'
                     : 'text-slate-600'
               }`}
+              style={isActive ? { backgroundColor: BRAND_RUBY.primary } : undefined}
             >
               {day}
             </div>
@@ -105,8 +110,7 @@ function MonthCalendar({ activeDates }: { activeDates: Set<string> }) {
 }
 
 export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQuiz }: JourneyScreenProps) {
-  const { t, i18n } = useTranslation();
-  const isArabic = i18n.language === 'ar';
+  const { t } = useTranslation();
 
   const [stats, setStats] = useState<Stats>({ totalWorkouts: 0, streak: 0, totalMinutes: 0, workoutDates: [] });
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
@@ -215,8 +219,11 @@ export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQui
             className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5"
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#4F8EF7]/10 flex items-center justify-center">
-                <User className="w-6 h-6 text-[#4F8EF7]" />
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: BRAND_RUBY.tint10 }}
+              >
+                <User className="w-6 h-6" style={{ color: BRAND_RUBY.primary }} />
               </div>
               <div>
                 <p className="text-white font-semibold text-sm">{t('journey.not_set')}</p>
@@ -245,10 +252,10 @@ export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQui
             className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5"
           >
             <div className="flex items-center gap-2 mb-3">
-              <Target className="w-4 h-4 text-[#4F8EF7]" />
+              <Target className="w-4 h-4" style={{ color: BRAND_RUBY.primary }} />
               <span className="text-white font-semibold text-sm">{t('journey.focus_title')}</span>
             </div>
-            <p className="text-[#4F8EF7] text-sm font-medium mb-2">{t(`journey.${focusKey}`)}</p>
+            <p className="text-sm font-medium mb-2" style={{ color: BRAND_RUBY.primary }}>{t(`journey.${focusKey}`)}</p>
             <div className="flex items-center gap-2 mb-3">
               <TrendingUp className="w-3.5 h-3.5 text-slate-500" />
               <span className="text-slate-400 text-xs">
@@ -285,7 +292,7 @@ export default function JourneyScreen({ userId, userProfile, onBack, onRetakeQui
             <span className="text-white font-semibold text-sm mb-4 block">{t('journey.stats_title')}</span>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { icon: Dumbbell, value: stats.totalWorkouts, label: t('journey.total_workouts'), color: '#4F8EF7' },
+                { icon: Dumbbell, value: stats.totalWorkouts, label: t('journey.total_workouts'), color: BRAND_RUBY.primary },
                 { icon: Flame, value: stats.streak, label: t('journey.current_streak'), color: '#F97316' },
                 { icon: Clock, value: stats.totalMinutes, label: t('journey.total_time'), color: '#34D399' },
               ].map((s) => (

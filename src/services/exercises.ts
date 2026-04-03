@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { ACTIVE_EXERCISES } from '../config/exercises';
+import { BRAND_RUBY } from '../constants/brand';
 
 export interface Exercise {
   id: string;
@@ -189,8 +190,8 @@ export const CATEGORIES: Record<string, { color: string; colorBg: string; colorB
     colorBorder: 'rgba(52, 211, 153, 0.2)',
   },
   endurance: {
-    color: '#4F8EF7',
-    colorBg: 'rgba(79, 142, 247, 0.08)',
-    colorBorder: 'rgba(79, 142, 247, 0.2)',
+    color: BRAND_RUBY.primary,
+    colorBg: BRAND_RUBY.tint08,
+    colorBorder: BRAND_RUBY.border20,
   },
 };

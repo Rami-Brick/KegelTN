@@ -22,6 +22,7 @@ import {
   fetchCompletions,
 } from '../services/exercises';
 import type { ExerciseWithStatus, UserProfile } from '../services/exercises';
+import { BRAND_RUBY } from '../constants/brand';
 
 interface HomeScreenProps {
   userId: string;
@@ -197,6 +198,8 @@ function getMilestoneKey(streak: number): string | null {
 export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpenJourney }: HomeScreenProps) {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+  const nextLanguage = isArabic ? 'fr' : 'ar';
+  const nextLanguageLabel = isArabic ? 'FR' : '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
 
   const [workouts, setWorkouts] = useState<WorkoutRecord[]>([]);
   const [categoryProgress, setCategoryProgress] = useState<CategoryProgress[]>([]);
@@ -306,11 +309,11 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
 
       {/* Language toggle */}
       <button
-        onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+        onClick={() => i18n.changeLanguage(nextLanguage)}
         className="absolute top-6 left-6 text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-2"
       >
         <Globe className="w-4 h-4" />
-        <span>{isArabic ? 'EN' : 'عربي'}</span>
+        <span>{nextLanguageLabel}</span>
       </button>
 
       {/* Content */}
@@ -330,11 +333,18 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
           initial={{ opacity: 0, scale: 0.96, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.08 }}
-          className="w-full rounded-2xl border border-[#4F8EF7]/25 bg-gradient-to-br from-[#4F8EF7]/16 to-[#4F8EF7]/6 px-3.5 py-3 mb-3"
+          className="w-full rounded-2xl border px-3.5 py-3 mb-3"
+          style={{
+            borderColor: BRAND_RUBY.border25,
+            background: `linear-gradient(135deg, ${BRAND_RUBY.tint16}, ${BRAND_RUBY.tint05})`,
+          }}
         >
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#4F8EF7]/15 flex items-center justify-center shrink-0">
-              <Medal className="w-4.5 h-4.5 text-[#7CC8FF]" />
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ backgroundColor: BRAND_RUBY.tint15 }}
+            >
+              <Medal className="w-4.5 h-4.5" style={{ color: BRAND_RUBY.light }} />
             </div>
             <div className="flex-1 text-start">
               <p className="text-slate-400 text-[10px] uppercase tracking-[0.16em] mb-0.5">
@@ -400,15 +410,18 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
                     <motion.span
                       animate={{ scale: [1, 1.18, 1], opacity: [0.55, 1, 0.55] }}
                       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                      className="absolute inset-0 rounded-full border border-[#4F8EF7]/35"
+                      className="absolute inset-0 rounded-full border"
+                      style={{ borderColor: BRAND_RUBY.softBorder35 }}
                     />
                   )}
                   <span
                     className={`relative w-2 h-2 rounded-full border ${
-                      day.completed
-                        ? 'bg-[#4F8EF7] border-[#4F8EF7]'
-                        : 'bg-transparent border-white/20'
+                      day.completed ? '' : 'bg-transparent border-white/20'
                     }`}
+                    style={day.completed ? {
+                      backgroundColor: BRAND_RUBY.primary,
+                      borderColor: BRAND_RUBY.primary,
+                    } : undefined}
                   />
                 </div>
               </motion.div>
@@ -427,7 +440,11 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
             onClick={onStartWorkout}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.03 }}
-            className="w-44 h-44 rounded-full bg-gradient-to-br from-[#4F8EF7] to-[#3B6FD4] text-white font-bold text-xl shadow-[0_0_40px_rgba(79,142,247,0.3)] flex items-center justify-center"
+            className="w-44 h-44 rounded-full text-white font-bold text-xl flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${BRAND_RUBY.primary}, ${BRAND_RUBY.dark})`,
+              boxShadow: BRAND_RUBY.ctaGlow,
+            }}
           >
             {t('home.start')}
           </motion.button>
@@ -460,7 +477,11 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.35 + index * 0.04 }}
-                          className="absolute -top-1 w-1.5 h-1.5 rounded-full bg-[#7CC8FF] shadow-[0_0_10px_rgba(124,200,255,0.9)]"
+                          className="absolute -top-1 w-1.5 h-1.5 rounded-full"
+                          style={{
+                            backgroundColor: BRAND_RUBY.light,
+                            boxShadow: BRAND_RUBY.dotGlow,
+                          }}
                         />
                       )}
 
@@ -469,14 +490,27 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
                         animate={{ height: barHeight, opacity: 1 }}
                         transition={{ duration: 0.45, delay: 0.32 + index * 0.05, ease: 'easeOut' }}
                         className={`w-5 rounded-full border ${
+                          day.totalSeconds > 0 || day.isToday ? '' : 'bg-white/[0.05] border-white/10'
+                        }`}
+                        style={
                           day.totalSeconds > 0
                             ? day.isToday
-                              ? 'bg-gradient-to-t from-[#4F8EF7] to-[#8BD4FF] border-[#8BD4FF]/60 shadow-[0_0_16px_rgba(124,200,255,0.22)]'
-                              : 'bg-gradient-to-t from-[#3B6FD4] to-[#68B6FF] border-[#68B6FF]/35'
+                              ? {
+                                  background: `linear-gradient(to top, ${BRAND_RUBY.primary}, ${BRAND_RUBY.light})`,
+                                  borderColor: BRAND_RUBY.lightBorder60,
+                                  boxShadow: BRAND_RUBY.chartGlow,
+                                }
+                              : {
+                                  background: `linear-gradient(to top, ${BRAND_RUBY.dark}, ${BRAND_RUBY.soft})`,
+                                  borderColor: BRAND_RUBY.softBorder35,
+                                }
                             : day.isToday
-                              ? 'bg-[#4F8EF7]/20 border-[#7CC8FF]/35'
-                              : 'bg-white/[0.05] border-white/10'
-                        }`}
+                              ? {
+                                  backgroundColor: BRAND_RUBY.tint20,
+                                  borderColor: BRAND_RUBY.lightBorder35,
+                                }
+                              : undefined
+                        }
                       />
                     </div>
                   </div>
@@ -533,7 +567,13 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
                           {t(`library.category_${category.category}`)}
                         </span>
                         {isGoalCategory && (
-                          <span className="px-1.5 py-0.5 rounded-full bg-[#4F8EF7]/12 text-[#7CC8FF] text-[9px] uppercase tracking-[0.08em]">
+                          <span
+                            className="px-1.5 py-0.5 rounded-full text-[9px] uppercase tracking-[0.08em]"
+                            style={{
+                              backgroundColor: BRAND_RUBY.tint12,
+                              color: BRAND_RUBY.light,
+                            }}
+                          >
                             {t('library.recommended_badge')}
                           </span>
                         )}
@@ -605,7 +645,10 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
                                   </span>
 
                                   {exercise.isCurrentLevel && !exercise.isCompleted && (
-                                    <span className="ms-auto px-1.5 py-0.5 rounded-full bg-white/[0.04] text-[9px] text-[#7CC8FF] shrink-0">
+                                    <span
+                                      className="ms-auto px-1.5 py-0.5 rounded-full bg-white/[0.04] text-[9px] shrink-0"
+                                      style={{ color: BRAND_RUBY.light }}
+                                    >
                                       {t('library.up_next')}
                                     </span>
                                   )}
@@ -658,8 +701,11 @@ export default function HomeScreen({ userId, userProfile, onStartWorkout, onOpen
           onClick={onOpenJourney}
           className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-3.5 flex items-center gap-3 mb-8"
         >
-          <div className="w-9 h-9 rounded-full bg-[#4F8EF7]/10 flex items-center justify-center shrink-0">
-            <Flame className="w-4 h-4 text-[#4F8EF7]" />
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: BRAND_RUBY.tint10 }}
+          >
+            <Flame className="w-4 h-4" style={{ color: BRAND_RUBY.primary }} />
           </div>
           <div className="flex-1 text-start">
             <p className="text-white text-sm font-medium">{t('journey.home_card')}</p>
