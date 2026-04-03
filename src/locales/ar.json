@@ -359,6 +359,7 @@
     "results": {
       "title": "خطتك المخصصة جاهزة",
       "subtitle": "بناءً على إجاباتك، نوصي بـ:",
+      "program_prefix": "البرنامج",
       "program": "برنامج {{program}}",
       "beginner": "مبتدئ",
       "intermediate": "متوسط",

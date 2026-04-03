@@ -359,6 +359,7 @@
     "results": {
       "title": "Votre programme personnalisé est prêt",
       "subtitle": "D'après vos réponses, nous recommandons :",
+      "program_prefix": "Programme",
       "program": "Programme {{program}}",
       "beginner": "Débutant",
       "intermediate": "Intermédiaire",

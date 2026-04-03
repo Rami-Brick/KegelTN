@@ -14,6 +14,8 @@ interface QuizScreenProps {
   initialAnswers?: QuizAnswers;
 }
 
+type ProgramKey = 'beginner' | 'intermediate' | 'advanced';
+
 const QUESTIONS = [
   { key: 'q1', options: 4, icon: Calendar },
   { key: 'q2', options: 3, icon: Target },
@@ -29,7 +31,7 @@ const QUESTIONS = [
  * Q3 (index 2) + Q4 (index 3) → difficulty (combined score 0-6)
  * Q1 (index 0) → age modifier (46+ caps at intermediate)
  */
-function deriveProgram(answers: QuizAnswers): string {
+function deriveProgram(answers: QuizAnswers): ProgramKey {
   const abilityScore = (answers[2] ?? 0) + (answers[3] ?? 0);
   const age = answers[0] ?? 0;
 
@@ -43,10 +45,35 @@ function deriveProgram(answers: QuizAnswers): string {
     difficulty = 'intermediate';
   }
 
-  return difficulty;
+  return difficulty as ProgramKey;
 }
 
 const ICON_COLORS = [BRAND_RUBY.primary, '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
+const PROGRAM_STYLES: Record<ProgramKey, {
+  accent: string;
+  tint: string;
+  border: string;
+  glow: string;
+}> = {
+  beginner: {
+    accent: '#34D399',
+    tint: 'rgba(52, 211, 153, 0.14)',
+    border: 'rgba(52, 211, 153, 0.35)',
+    glow: '0 14px 32px rgba(52, 211, 153, 0.10)',
+  },
+  intermediate: {
+    accent: BRAND_RUBY.primary,
+    tint: BRAND_RUBY.tint16,
+    border: BRAND_RUBY.border25,
+    glow: '0 14px 32px rgba(212, 79, 99, 0.12)',
+  },
+  advanced: {
+    accent: '#EC4899',
+    tint: 'rgba(236, 72, 153, 0.14)',
+    border: 'rgba(236, 72, 153, 0.35)',
+    glow: '0 14px 32px rgba(236, 72, 153, 0.10)',
+  },
+};
 
 export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenProps) {
   const { t, i18n } = useTranslation();
@@ -90,6 +117,8 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
   };
 
   const program = deriveProgram(answers);
+  const programStyle = PROGRAM_STYLES[program];
+  const programLabel = t(`quiz.results.${program}`);
 
   const slideVariants = {
     enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
@@ -133,15 +162,61 @@ export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenPro
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="w-full max-w-sm bg-white/5 border border-white/10 rounded-2xl p-6 mb-6"
+            className="w-full max-w-sm rounded-[28px] border p-1.5 mb-6"
+            style={{
+              borderColor: programStyle.border,
+              background: `linear-gradient(160deg, ${programStyle.tint}, rgba(255,255,255,0.02))`,
+              boxShadow: programStyle.glow,
+            }}
           >
-            <p className="text-center text-sm font-medium mb-1" style={{ color: BRAND_RUBY.primary }}>
-            </p>
-            <p className="text-center text-white text-2xl font-bold">
-              {t('quiz.results.program', {
-                program: t(`quiz.results.${program}`),
-              })}
-            </p>
+            <div className="relative overflow-hidden rounded-[22px] border border-white/6 bg-[#11182A]/95 px-5 py-6">
+              <div
+                className="absolute inset-x-0 top-0 h-24 opacity-90"
+                style={{
+                  background: `radial-gradient(circle at top, ${programStyle.tint} 0%, transparent 72%)`,
+                }}
+              />
+
+              <div className="relative flex flex-col items-center text-center">
+                <div
+                  className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-slate-200"
+                  style={{
+                    borderColor: programStyle.border,
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                  }}
+                >
+                  <Sparkles className="w-3.5 h-3.5" style={{ color: programStyle.accent }} />
+                  {t('library.recommended_badge')}
+                </div>
+
+                <p className="mt-6 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  {t('quiz.results.program_prefix')}
+                </p>
+
+                <p
+                  className="mt-3 max-w-[9.5ch] text-white font-extrabold tracking-[-0.05em] leading-[0.92] text-[clamp(1.95rem,8vw,3rem)]"
+                  style={{ textShadow: `0 6px 22px ${programStyle.tint}` }}
+                >
+                  {programLabel}
+                </p>
+
+                <div className="mt-4 flex items-center gap-2">
+                  {(['beginner', 'intermediate', 'advanced'] as ProgramKey[]).map((level) => {
+                    const isActive = level === program;
+                    return (
+                      <span
+                        key={level}
+                        className="h-1.5 rounded-full transition-all"
+                        style={{
+                          width: isActive ? 28 : 10,
+                          backgroundColor: isActive ? programStyle.accent : 'rgba(255,255,255,0.12)',
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
