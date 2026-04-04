@@ -1,0 +1,399 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Check, ChevronLeft, Target, BarChart3, Calendar,
+  Sparkles, Dumbbell, Clock, Heart, Globe,
+} from 'lucide-react';
+import { BRAND_RUBY } from '../constants/brand';
+
+type QuizAnswers = Record<number, number>;
+
+interface QuizScreenProps {
+  onComplete: (answers: QuizAnswers, program: string) => void;
+  initialAnswers?: QuizAnswers;
+}
+
+type ProgramKey = 'beginner' | 'intermediate' | 'advanced';
+
+const QUESTIONS = [
+  { key: 'q1', options: 4, icon: Calendar },
+  { key: 'q2', options: 3, icon: Target },
+  { key: 'q3', options: 4, icon: BarChart3 },
+  { key: 'q4', options: 4, icon: Dumbbell },
+  { key: 'q5', options: 4, icon: Clock },
+  { key: 'q6', options: 4, icon: Heart },
+];
+
+/**
+ * New recommendation algorithm:
+ * Q2 (index 1) → categories
+ * Q3 (index 2) + Q4 (index 3) → difficulty (combined score 0-6)
+ * Q1 (index 0) → age modifier (46+ caps at intermediate)
+ */
+function deriveProgram(answers: QuizAnswers): ProgramKey {
+  const abilityScore = (answers[2] ?? 0) + (answers[3] ?? 0);
+  const age = answers[0] ?? 0;
+
+  let difficulty: string;
+  if (abilityScore <= 2) difficulty = 'beginner';
+  else if (abilityScore <= 4) difficulty = 'intermediate';
+  else difficulty = 'advanced';
+
+  // Age safety cap: 46+ cannot start at advanced
+  if (age === 3 && difficulty === 'advanced') {
+    difficulty = 'intermediate';
+  }
+
+  return difficulty as ProgramKey;
+}
+
+const ICON_COLORS = [BRAND_RUBY.primary, '#EF4444', '#F97316', '#34D399', '#8B5CF6', '#EC4899'];
+const PROGRAM_STYLES: Record<ProgramKey, {
+  accent: string;
+  tint: string;
+  border: string;
+  glow: string;
+}> = {
+  beginner: {
+    accent: '#34D399',
+    tint: 'rgba(52, 211, 153, 0.14)',
+    border: 'rgba(52, 211, 153, 0.35)',
+    glow: '0 14px 32px rgba(52, 211, 153, 0.10)',
+  },
+  intermediate: {
+    accent: BRAND_RUBY.primary,
+    tint: BRAND_RUBY.tint16,
+    border: BRAND_RUBY.border25,
+    glow: '0 14px 32px rgba(212, 79, 99, 0.12)',
+  },
+  advanced: {
+    accent: '#EC4899',
+    tint: 'rgba(236, 72, 153, 0.14)',
+    border: 'rgba(236, 72, 153, 0.35)',
+    glow: '0 14px 32px rgba(236, 72, 153, 0.10)',
+  },
+};
+
+export default function QuizScreen({ onComplete, initialAnswers }: QuizScreenProps) {
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
+  const nextLanguage = isArabic ? 'fr' : 'ar';
+  const nextLanguageLabel = isArabic ? 'FR' : '\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
+
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers ?? {});
+  const [direction, setDirection] = useState(1);
+  const [showResults, setShowResults] = useState(false);
+
+  const total = QUESTIONS.length;
+  const progress = ((step + 1) / total) * 100;
+  const currentQ = QUESTIONS[step];
+  const selectedOption = answers[step];
+  const IconComponent = currentQ.icon;
+  const iconColor = ICON_COLORS[step];
+
+  const selectOption = (optionIndex: number) => {
+    setAnswers((prev) => ({ ...prev, [step]: optionIndex }));
+  };
+
+  const next = () => {
+    if (selectedOption === undefined) return;
+    setDirection(1);
+    if (step < total - 1) {
+      setStep((s) => s + 1);
+    } else {
+      setShowResults(true);
+    }
+  };
+
+  const back = () => {
+    if (showResults) {
+      setShowResults(false);
+      return;
+    }
+    setDirection(-1);
+    if (step > 0) setStep((s) => s - 1);
+  };
+
+  const program = deriveProgram(answers);
+  const programStyle = PROGRAM_STYLES[program];
+  const programLabel = t(`quiz.results.${program}`);
+
+  const slideVariants = {
+    enter: (dir: number) => ({ x: dir > 0 ? 80 : -80, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -80 : 80, opacity: 0 }),
+  };
+
+  if (showResults) {
+    return (
+      <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+            className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+            style={{ backgroundColor: BRAND_RUBY.tint10 }}
+          >
+            <Sparkles className="w-10 h-10" style={{ color: BRAND_RUBY.primary }} />
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-2xl font-bold text-white mb-2 text-center"
+          >
+            {t('quiz.results.title')}
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-slate-400 text-sm mb-8 text-center"
+          >
+            {t('quiz.results.subtitle')}
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="w-full max-w-sm rounded-[28px] border p-1.5 mb-6"
+            style={{
+              borderColor: programStyle.border,
+              background: `linear-gradient(160deg, ${programStyle.tint}, rgba(255,255,255,0.02))`,
+              boxShadow: programStyle.glow,
+            }}
+          >
+            <div className="relative overflow-hidden rounded-[22px] border border-white/6 bg-[#11182A]/95 px-5 py-6">
+              <div
+                className="absolute inset-x-0 top-0 h-24 opacity-90"
+                style={{
+                  background: `radial-gradient(circle at top, ${programStyle.tint} 0%, transparent 72%)`,
+                }}
+              />
+
+              <div className="relative flex flex-col items-center text-center">
+                <div
+                  className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-medium uppercase tracking-[0.22em] text-slate-200"
+                  style={{
+                    borderColor: programStyle.border,
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                  }}
+                >
+                  <Sparkles className="w-3.5 h-3.5" style={{ color: programStyle.accent }} />
+                  {t('library.recommended_badge')}
+                </div>
+
+                <p className="mt-6 text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  {t('quiz.results.program_prefix')}
+                </p>
+
+                <p
+                  className="mt-3 max-w-[9.5ch] text-white font-extrabold tracking-[-0.05em] leading-[0.92] text-[clamp(1.95rem,8vw,3rem)]"
+                  style={{ textShadow: `0 6px 22px ${programStyle.tint}` }}
+                >
+                  {programLabel}
+                </p>
+
+                <div className="mt-4 flex items-center gap-2">
+                  {(['beginner', 'intermediate', 'advanced'] as ProgramKey[]).map((level) => {
+                    const isActive = level === program;
+                    return (
+                      <span
+                        key={level}
+                        className="h-1.5 rounded-full transition-all"
+                        style={{
+                          width: isActive ? 28 : 10,
+                          backgroundColor: isActive ? programStyle.accent : 'rgba(255,255,255,0.12)',
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="w-full max-w-sm space-y-3 mb-10"
+          >
+            {[
+              { icon: Target, text: t('quiz.results.insight1') },
+              { icon: BarChart3, text: t('quiz.results.insight2') },
+              { icon: Calendar, text: t('quiz.results.insight3') },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3"
+              >
+                <item.icon className="w-5 h-5 text-[#34D399] shrink-0" />
+                <span className="text-slate-300 text-sm">{item.text}</span>
+              </div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="w-full max-w-sm space-y-3"
+          >
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => onComplete(answers, program)}
+              className="w-full py-3.5 rounded-xl text-white font-semibold text-base"
+              style={{ backgroundColor: BRAND_RUBY.primary }}
+            >
+              {t('quiz.results.start')}
+            </motion.button>
+            <button
+              onClick={back}
+              className="w-full py-3 text-slate-500 text-sm hover:text-slate-300 transition-colors"
+            >
+              {t('quiz.back')}
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0A0F1E] flex flex-col">
+      {/* Header */}
+      <div className="px-6 pt-6 pb-4">
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={back}
+            disabled={step === 0}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:text-white disabled:opacity-0 transition-all"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <span className="text-slate-500 text-sm">
+            {t('quiz.progress', { current: step + 1, total })}
+          </span>
+          <button
+            onClick={() => i18n.changeLanguage(nextLanguage)}
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+          >
+            <Globe className="w-4 h-4" />
+            <span>{nextLanguageLabel}</span>
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ backgroundColor: BRAND_RUBY.primary }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+          />
+        </div>
+      </div>
+
+      {/* Question content */}
+      <div className="flex-1 flex flex-col px-6 pt-4">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={step}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="flex-1 flex flex-col"
+          >
+            {/* Animated icon */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5"
+              style={{ backgroundColor: `${iconColor}15` }}
+            >
+              <motion.div
+                animate={{ y: [0, -3, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <IconComponent className="w-7 h-7" style={{ color: iconColor }} />
+              </motion.div>
+            </motion.div>
+
+            {/* Title & subtitle */}
+            <h1 className="text-2xl font-bold text-white mb-2">
+              {t(`quiz.${currentQ.key}.title`)}
+            </h1>
+            <p className="text-slate-400 text-sm mb-8">
+              {t(`quiz.${currentQ.key}.subtitle`)}
+            </p>
+
+            {/* Options */}
+            <div className="space-y-3">
+              {Array.from({ length: currentQ.options }, (_, i) => {
+                const isSelected = selectedOption === i;
+                return (
+                  <motion.button
+                    key={i}
+                    onClick={() => selectOption(i)}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full flex items-center gap-3 px-4 py-4 rounded-xl border text-start transition-all duration-200 ${
+                      isSelected
+                        ? 'text-white'
+                        : 'bg-white/[0.03] border-white/10 text-slate-300 hover:bg-white/[0.06]'
+                    }`}
+                    style={isSelected ? {
+                      backgroundColor: BRAND_RUBY.tint10,
+                      borderColor: BRAND_RUBY.primary,
+                    } : undefined}
+                  >
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${
+                        isSelected
+                          ? ''
+                          : 'border-white/20'
+                      }`}
+                      style={isSelected ? {
+                        borderColor: BRAND_RUBY.primary,
+                        backgroundColor: BRAND_RUBY.primary,
+                      } : undefined}
+                    >
+                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    <span className="text-sm leading-snug">
+                      {t(`quiz.${currentQ.key}.o${i + 1}`)}
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom button */}
+      <div className="px-6 pb-8 pt-4">
+        <motion.button
+          onClick={next}
+          disabled={selectedOption === undefined}
+          whileTap={{ scale: 0.97 }}
+          className="w-full py-3.5 rounded-xl text-white font-semibold text-base disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+          style={{ backgroundColor: BRAND_RUBY.primary }}
+        >
+          {t('quiz.next')}
+        </motion.button>
+      </div>
+    </div>
+  );
+}
