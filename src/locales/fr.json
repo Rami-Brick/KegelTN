@@ -274,7 +274,7 @@
     "greeting_afternoon": "Bon après-midi",
     "greeting_evening": "Bonsoir",
     "percentile": {
-      "badge": "Classement des pratiquants",
+      "badge": "Classement",
       "label": "Vous faites partie du top {{percent}} des pratiquants",
       "zero": "Commencez aujourd'hui et gagnez votre place parmi les meilleurs."
     },

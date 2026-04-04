@@ -7,6 +7,7 @@ import ar from '../locales/ar.json';
 function syncDocumentLanguage(language: string) {
   if (typeof document === 'undefined') return;
   document.documentElement.lang = language;
+  document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
 }
 
 i18n.on('languageChanged', syncDocumentLanguage);
